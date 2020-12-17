@@ -1,1 +1,1 @@
-# ToyCompiler
+# MxStar-Compiler
