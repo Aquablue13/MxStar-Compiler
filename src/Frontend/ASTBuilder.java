@@ -217,10 +217,10 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitFuncExpr(MxStarParser.FuncExprContext ctx) {
     //    funcExprNode t = new funcExprNode(new position(ctx));
-        ExprNode head = (ExprNode) visit(ctx.exprs());/*
+        ExprNode head = (ExprNode) visit(ctx.expr());/*
         if (head instanceof memberExpr) {
-            ((memberExpr) base).isFunc = true;
-            base.assignable = false;
+            ((memberExpr) head).isFunc = true;
+            head.isAssignable = false;
         }*/
         ArrayList<ExprNode> para;
         if (ctx.exprs() != null)

@@ -11,7 +11,11 @@ classDef :
 ;
 
 varDef :
+<<<<<<< HEAD
+	type oneVarDef (',' oneVarDef)* ';'
+=======
 	type oneVarDef (',' oneVarDef)*
+>>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 ;
 
 type :
@@ -42,7 +46,11 @@ expr :
 	atomExpression																#atomExpr
 	| <assoc=right> New creator													#creatorExpr
 	| expr '.' Identifier 														#memberExpr
+<<<<<<< HEAD
+	| expr ('(' exprs? ')')														#funcExpr
+=======
 	| Identifier ('(' exprs? ')')												#funcExpr
+>>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 	| '(' expr ')'																#parenExpr
 	| expr LeftBracket expr RightBracket										#subscriptExpr
 	| expr op=(DbAdd | DbSub) 													#suffixExpr
@@ -86,7 +94,11 @@ block :
 ;
 
 statement :
+<<<<<<< HEAD
+	varDef																	#varDefStat
+=======
 	varDef ';'																	#varDefStat
+>>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 
 	| Break ';'																	#breakStat
 	| Continue ';'																#continueStat

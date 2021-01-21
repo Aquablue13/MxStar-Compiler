@@ -11,7 +11,7 @@ classDef :
 ;
 
 varDef :
-	type oneVarDef (',' oneVarDef)*
+	type oneVarDef (',' oneVarDef)* ';'
 ;
 
 type :
@@ -42,7 +42,7 @@ expr :
 	atomExpression																#atomExpr
 	| <assoc=right> New creator													#creatorExpr
 	| expr '.' Identifier 														#memberExpr
-	| Identifier ('(' exprs? ')')												#funcExpr
+	| expr ('(' exprs? ')')														#funcExpr
 	| '(' expr ')'																#parenExpr
 	| expr LeftBracket expr RightBracket										#subscriptExpr
 	| expr op=(DbAdd | DbSub) 													#suffixExpr
@@ -86,7 +86,7 @@ block :
 ;
 
 statement :
-	varDef ';'																	#varDefStat
+	varDef																	#varDefStat
 
 	| Break ';'																	#breakStat
 	| Continue ';'																#continueStat

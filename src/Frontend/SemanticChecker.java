@@ -45,10 +45,10 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(RootNode it) {
     	localScope = globalScope;
     	funcType main = globalScope.getFunctionType("main", false);
-        if (main.isInt == false)
-        	throw new semanticError("main func return wrong type", it.pos);
         if (main.parameters.size() != 0)
-        	throw new semanticError("main func have one more parameter", it.pos);
+            throw new semanticError("main func have one more parameter", it.pos);
+        if (!main.isInt)
+        	throw new semanticError("main func return wrong type", it.pos);
         it.body.forEach(unit -> unit.accept(this));
     }
 
@@ -58,12 +58,12 @@ public class SemanticChecker implements ASTVisitor {
         localScope = new Scope(localScope);
         curClass.vars.forEach((key, val) -> localScope.defineVariable(key, val, it.pos));
         curClass.funcs.forEach((key, val) -> localScope.defineFunction(key, val, it.pos));
-    /*    it.funcs.forEach(unit -> unit.accept(this));
+        it.funcs.forEach(unit -> unit.accept(this));
         if (it.constructor != null) {
-            if (!it.constructor.equal(it))
+            if (!it.constructor.name.equals(it.name))
             	throw new semanticError("wrong constructor's name", it.pos);
             it.constructor.accept(this);
-        }*/
+        }
         localScope = localScope.parentScope;
         curClass = null;
     }
@@ -80,16 +80,17 @@ public class SemanticChecker implements ASTVisitor {
     		returnType = it.type.type;
         else
         	returnType = new Type("void");
-        localScope = new Scope(localScope);/*
+        localScope = new Scope(localScope);
         it.parameters.forEach(unit -> localScope.defineVariable(unit.name, unit.type.type, unit.pos));
         it.block.accept(this);
         localScope = localScope.parentScope;
-        if (it.name.equal("main")) {
+        if (it.name.equals("main")) {
         	haveReturned = true;
         	return;
         }
-        if (!it.type.simpleType.equals("void") && it.type != null)
-            throw new semanticError("No return", it.pos);*/
+        if (!it.type.type.name.equals("void") && it.type != null) {
+            throw new semanticError("No return", it.pos);
+        }
     }
 
     @Override
@@ -100,9 +101,9 @@ public class SemanticChecker implements ASTVisitor {
         if (it.type.type.isVoid == true || it.type.type.isNull == true)
         	throw new semanticError("the type of variable is void or null", it.pos);
         if (it.expr != null) {
-            it.expr.accept(this);/*
+            it.expr.accept(this);
             if (!it.expr.type.equal(it.type.type))
-            	throw new semanticError("mismatched variable type & original type", it.pos);*/
+            	throw new semanticError("mismatched variable type & original type", it.pos);
         }
         localScope.defineVariable(it.name, it.type.type, it.pos);
     }
@@ -213,7 +214,7 @@ public class SemanticChecker implements ASTVisitor {
         if (((funcType) it.head.type).parameters.size() != it.parameters.size())
         	throw new semanticError("mismatched parameter's size", it.pos);
         for (int i = 0; i < ((funcType) it.head.type).parameters.size(); i++) {
-            if (!((funcType) it.head.type).parameters.get(i).equals(it.parameters.get(i).type))
+            if (!((funcType) it.head.type).parameters.get(i).equal(it.parameters.get(i).type))
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
         it.type = it.head.type;
@@ -288,11 +289,19 @@ public class SemanticChecker implements ASTVisitor {
 		it.num2.accept(this);
 		if (!it.num1.type.equal(it.num2.type))
 			throw new semanticError("mismatched binaryExpr type", it.pos);
-		if (!it.num1.type.isInt && !it.num1.type.isString)
-			throw new semanticError("type isn't int or string", it.pos);
-		if (it.num1.type.isString && it.op != "+")
+		if ((it.op.equals("-") || it.op.equals("*") || it.op.equals("/") || it.op.equals("%")
+                || it.op.equals("<<") || it.op.equals(">>") || it.op.equals("&")
+                || it.op.equals("|") || it.op.equals("^")) && !it.num1.type.isInt)
+			throw new semanticError("binary type isn't int", it.pos);
+        if ((it.op.equals("&&") || it.op.equals("||")) && !it.num1.type.isBool)
+            throw new semanticError("binary type isn't bool", it.pos);
+		if (it.num1.type.isString && !it.op.equals("+"))
 			throw new semanticError("string with not add", it.pos);
-		it.type = it.num1.type;
+        if (it.op.equals("<") || it.op.equals(">") || it.op.equals("<=") || it.op.equals(">=")
+                || it.op.equals("==") || it.op.equals("!="))
+            it.type = new Type("bool");
+        else
+            it.type = it.num1.type;
     }
 
     @Override

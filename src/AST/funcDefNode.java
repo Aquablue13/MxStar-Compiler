@@ -5,7 +5,7 @@ import Util.position;
 import java.util.ArrayList;
 
 public class funcDefNode extends DefNode {
-    public typeNode type;
+    public typeNode type = null;
     public String name;
     public ArrayList<oneVarDefNode> parameters;
     public blockStatNode block;

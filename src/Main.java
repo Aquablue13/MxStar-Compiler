@@ -20,7 +20,7 @@ public class Main {
 
         InputStream input = System.in;
 
-    /*    String file_name = "./testcases/sema/array-package/array-9.mx";
+    /*    String file_name = "./testcases/sema/expression-package/expression-1.mx";
         InputStream input = new FileInputStream(file_name);*/
 
         try {
