@@ -18,9 +18,9 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        InputStream input = System.in;
-
-    /*    String file_name = "./testcases/sema/expression-package/expression-1.mx";
+       InputStream input = System.in;
+/*
+        String file_name = "./testcases/sema/all/class-17.mx";
         InputStream input = new FileInputStream(file_name);*/
 
         try {

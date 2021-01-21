@@ -4,7 +4,7 @@ import Util.Type.*;
 import Util.position;
 
 public class typeNode extends ASTNode {
-    public Type type;
+    public String typeName;
     public int dim = 0;
 
     public typeNode(position pos) {
@@ -13,14 +13,18 @@ public class typeNode extends ASTNode {
 
     public typeNode(position pos, String s, int dim) {
         super(pos);
-        this.type = new Type(s);
+        this.typeName = s;
         this.dim = dim;
     }
 
     public Type getType(){
         if (this.dim == 0)
-            return type;
-        return new arrayType(type.name, dim);
+            return new Type(typeName);
+        return new arrayType(typeName, dim);
+    }
+
+    public boolean equal(typeNode t) {
+        return (this.typeName.equals(t.typeName)) && (this.dim == t.dim);
     }
 
     @Override

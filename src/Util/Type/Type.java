@@ -7,6 +7,10 @@ public class Type {
     public Type() {}
 
     public Type(String name) {
+        if (name == null) {
+            isNull = true;
+            return;
+        }
         this.name = name;
         switch (name) {
             case "int" -> isInt = true;
@@ -18,6 +22,6 @@ public class Type {
     }
 
     public boolean equal(Type t) {
-        return this.name.equals(t.name);
+        return ((this.name == null) && (t.name == null)) || ((this.name != null) && (t.name != null) && (this.name.equals(t.name)));
     }
 }

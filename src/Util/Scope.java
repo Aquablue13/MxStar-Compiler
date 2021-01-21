@@ -1,5 +1,6 @@
 package Util;
 
+import AST.*;
 import Util.Type.*;
 import Util.Error.semanticError;
 import Util.position;
@@ -44,9 +45,9 @@ public class Scope {
                 return null;
     }
 
-    public void defineFunction(String name, funcType type, position pos) {
+    public void defineFunction(String name, funcType type, position pos) {/*
         if (this.containsType(name, true))
-            throw new semanticError("duplicated with type name", pos);
+            throw new semanticError("duplicated with type name", pos);*/
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
         funcs.put(name, type);
@@ -96,5 +97,12 @@ public class Scope {
                 return parentScope.getType(name, true);
             else
                 return null;
+    }
+
+    public Type getType(typeNode type) {
+        if (type.dim == 0)
+            return types.get(type.typeName);
+        else
+            return new arrayType(types.get(type.typeName), type.dim);
     }
 }

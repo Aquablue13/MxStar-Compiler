@@ -7,15 +7,11 @@ program : programUnit* EOF;
 programUnit : classDef | varDef | funcDef;
 
 classDef :
-	Class Identifier '{' (varDef | funcDef)* '}'
+	Class Identifier '{' (varDef | funcDef)* '}' ';'
 ;
 
 varDef :
-<<<<<<< HEAD
 	type oneVarDef (',' oneVarDef)* ';'
-=======
-	type oneVarDef (',' oneVarDef)*
->>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 ;
 
 type :
@@ -31,7 +27,7 @@ oneVarDef :
 ;
 
 funcDef :
-	funcType Identifier ('(' parameters? ')') block
+	funcType? Identifier ('(' parameters? ')') block
 ;
 
 funcType : type | Void;
@@ -46,11 +42,7 @@ expr :
 	atomExpression																#atomExpr
 	| <assoc=right> New creator													#creatorExpr
 	| expr '.' Identifier 														#memberExpr
-<<<<<<< HEAD
 	| expr ('(' exprs? ')')														#funcExpr
-=======
-	| Identifier ('(' exprs? ')')												#funcExpr
->>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 	| '(' expr ')'																#parenExpr
 	| expr LeftBracket expr RightBracket										#subscriptExpr
 	| expr op=(DbAdd | DbSub) 													#suffixExpr
@@ -79,6 +71,8 @@ atomExpression :
 	| Null 																		#nullExpr
 ;
 
+BoolValue : 'true' | 'false';
+
 creator :
 	basicType (LeftBracket expr RightBracket)+ (LeftBracket RightBracket)+ (LeftBracket expr RightBracket)+ 	#errorCreator
 	| basicType (LeftBracket expr RightBracket)+ (LeftBracket RightBracket)*				 	#arrayCreator
@@ -94,11 +88,7 @@ block :
 ;
 
 statement :
-<<<<<<< HEAD
 	varDef																	#varDefStat
-=======
-	varDef ';'																	#varDefStat
->>>>>>> d4e6604c8fe40e97cf1c480b41926f0893b5e221
 
 	| Break ';'																	#breakStat
 	| Continue ';'																#continueStat
@@ -183,7 +173,7 @@ LeftBracket : '[';
 RightBracket : ']';
 
 Identifier :
-	[a-zA-Z] [a-zA-Z0-9]*
+	[a-zA-Z] [a-zA-Z0-9_]*
 ;
 
 Integer :
@@ -192,8 +182,6 @@ Integer :
 ;
 
 StringValue : '"' Char* '"';
-
-BoolValue : True | False;
 
 fragment
 Char :

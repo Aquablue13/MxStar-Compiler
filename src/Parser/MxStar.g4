@@ -7,7 +7,7 @@ program : programUnit* EOF;
 programUnit : classDef | varDef | funcDef;
 
 classDef :
-	Class Identifier '{' (varDef | funcDef)* '}'
+	Class Identifier '{' (varDef | funcDef)* '}' ';'
 ;
 
 varDef :
@@ -27,7 +27,7 @@ oneVarDef :
 ;
 
 funcDef :
-	funcType Identifier ('(' parameters? ')') block
+	funcType? Identifier ('(' parameters? ')') block
 ;
 
 funcType : type | Void;
@@ -70,6 +70,8 @@ atomExpression :
 	| This 																		#thisExpr
 	| Null 																		#nullExpr
 ;
+
+BoolValue : 'true' | 'false';
 
 creator :
 	basicType (LeftBracket expr RightBracket)+ (LeftBracket RightBracket)+ (LeftBracket expr RightBracket)+ 	#errorCreator
@@ -171,7 +173,7 @@ LeftBracket : '[';
 RightBracket : ']';
 
 Identifier :
-	[a-zA-Z] [a-zA-Z0-9]*
+	[a-zA-Z] [a-zA-Z0-9_]*
 ;
 
 Integer :
@@ -180,8 +182,6 @@ Integer :
 ;
 
 StringValue : '"' Char* '"';
-
-BoolValue : True | False;
 
 fragment
 Char :

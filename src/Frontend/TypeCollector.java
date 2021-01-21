@@ -27,23 +27,24 @@ public class TypeCollector implements ASTVisitor {
     @Override public void visit(varDefNode it) {}
 
     @Override public void visit(funcDefNode it) {
+	    Type get = globalScope.getType(it.type);
         if (className == null) {
-            funcType put = globalScope.funcs.put(it.name, new funcType(it.type.type.name));
-            it.parameters.forEach(unit -> globalScope.funcs.get(it.name).parameters.add(unit.type.type));
+            globalScope.funcs.get(it.name).type = get;
+            it.parameters.forEach(unit -> globalScope.funcs.get(it.name).parameters.add(globalScope.getType(unit.type)));
         } else {
-            ((classType) globalScope.types.get(className)).funcs.put(it.name, new funcType(it.type.type.name));
-            it.parameters.forEach(unit -> ((classType) globalScope.types.get(className)).funcs.get(it.name).parameters.add(unit.type.type));
+            ((classType) globalScope.types.get(className)).funcs.get(it.name).type = get;
+            it.parameters.forEach(unit -> ((classType) globalScope.types.get(className)).funcs.get(it.name).parameters.add(globalScope.getType(unit.type)));
         }
     }
 
     @Override public void visit(typeNode it) {}
 
     @Override public void visit(oneVarDefNode it) {
+	    Type get = globalScope.getType(it.type);
         if (className == null)
-            globalScope.vars.put(it.name, it.type.type);
-        else {
-            ((classType)globalScope.types.get(className)).vars.put(it.name, it.type.type);
-        }
+            globalScope.vars.put(it.name, get);
+        else
+            ((classType)globalScope.types.get(className)).vars.put(it.name, get);
     }
 
     @Override public void visit(intExprNode it) {}

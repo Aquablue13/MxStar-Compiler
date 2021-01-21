@@ -45,9 +45,11 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(RootNode it) {
     	localScope = globalScope;
     	funcType main = globalScope.getFunctionType("main", false);
+    	if (main == null)
+            throw new semanticError("find no main", it.pos);
         if (main.parameters.size() != 0)
             throw new semanticError("main func have one more parameter", it.pos);
-        if (!main.isInt)
+        if (main.type == null || !main.type.isInt)
         	throw new semanticError("main func return wrong type", it.pos);
         it.body.forEach(unit -> unit.accept(this));
     }
@@ -62,6 +64,8 @@ public class SemanticChecker implements ASTVisitor {
         if (it.constructor != null) {
             if (!it.constructor.name.equals(it.name))
             	throw new semanticError("wrong constructor's name", it.pos);
+            if (it.constructor.type != null)
+                throw new semanticError("wrong constructor's type", it.pos);
             it.constructor.accept(this);
         }
         localScope = localScope.parentScope;
@@ -77,18 +81,18 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(funcDefNode it) {
     	haveReturned = false;
     	if (it.type != null)
-    		returnType = it.type.type;
+    		returnType = globalScope.getType(it.type);
         else
         	returnType = new Type("void");
         localScope = new Scope(localScope);
-        it.parameters.forEach(unit -> localScope.defineVariable(unit.name, unit.type.type, unit.pos));
+        it.parameters.forEach(unit -> localScope.defineVariable(unit.name, globalScope.getType(unit.type), unit.pos));
         it.block.accept(this);
         localScope = localScope.parentScope;
-        if (it.name.equals("main")) {
+        if (it.name.equals("main") || haveReturned) {
         	haveReturned = true;
         	return;
         }
-        if (!it.type.type.name.equals("void") && it.type != null) {
+        if (it.type != null && !it.type.getType().equal(new Type ("void"))) {
             throw new semanticError("No return", it.pos);
         }
     }
@@ -98,19 +102,21 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(oneVarDefNode it) {
-        if (it.type.type.isVoid == true || it.type.type.isNull == true)
+        if (globalScope.getType(it.type).isVoid || globalScope.getType(it.type).isNull)
         	throw new semanticError("the type of variable is void or null", it.pos);
         if (it.expr != null) {
             it.expr.accept(this);
-            if (!it.expr.type.equal(it.type.type))
+            if (it.expr.type == null)
+                throw new semanticError("it.expr.type null", it.pos);
+            if (!it.expr.type.isNull && !it.expr.type.equal(globalScope.getType(it.type)))
             	throw new semanticError("mismatched variable type & original type", it.pos);
         }
-        localScope.defineVariable(it.name, it.type.type, it.pos);
+        localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos);
     }
 
     @Override
     public void visit(intExprNode it) {
-    	it.type = new Type("int");
+    	it.type = new Type( "int");
     }
 
     @Override
@@ -144,7 +150,8 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(creatorExprNode it) {
 		if (it.exprs != null) 
-            it.exprs.forEach(x -> {x.accept(this); if (!x.type.isInt) throw new semanticError("not int", x.pos);});
+            it.exprs.forEach(unit -> {unit.accept(this); if (!unit.type.isInt) throw new semanticError("not int", unit.pos);});
+        it.type = globalScope.getType(it.typeNode);
     }
 
     @Override
@@ -152,39 +159,33 @@ public class SemanticChecker implements ASTVisitor {
     	it.head.accept(this);
 
         if (it.head.type instanceof arrayType && it.isFunc && it.member.equals("size")) {
-        //    funcType type = new funcType("size");
             it.type = new funcType("int");
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("length")) {/*
-            funcSymbol func = new funcSymbol("length");
-            func.returnType = new primitiveType("int");*/
+        if (it.head.type.isString && it.isFunc && it.member.equals("length")) {
             it.type = new funcType("int");
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("substring")) {/*
-            funcSymbol func = new funcSymbol("substring");
-            func.returnType = new primitiveType("string");
-            func.paramList.add(new varSymbol("left", new primitiveType("int")));
-            func.paramList.add(new varSymbol("right", new primitiveType("int")));
-            it.type = func;*/
-            it.type = new funcType("string");
+        if (it.head.type.isString && it.isFunc && it.member.equals("substring")) {
+            funcType type = new funcType("string");
+            type.parameters.add(new Type("int"));
+            type.parameters.add(new Type("int"));
+            it.type = type;
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("parseInt")) {/*
-            funcSymbol func = new funcSymbol("parseInt");
-            func.returnType = new primitiveType("int");*/
+        if (it.head.type.isString && it.isFunc && it.member.equals("parseInt")) {
             it.type = new funcType("int");;
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("ord")) {/*
-            funcSymbol func = new funcSymbol("ord");
-            func.returnType = new primitiveType("int");
-            func.paramList.add(new varSymbol("pos", new primitiveType("int")));*/
-            it.type = new funcType("int");
+        if (it.head.type.isString && it.isFunc && it.member.equals("ord")) {
+            funcType type = new funcType("int");
+            type.parameters.add(new Type("int"));
+            it.type = type;
             return;
         }
-        if (!(it.head.type instanceof classType)) throw new semanticError("not a class", it.pos);
+        if (!(it.head.type instanceof classType))
+            throw new semanticError("not a class", it.pos);
+
         classType cur = (classType) it.head.type;
 
         if (it.isFunc) {
@@ -217,7 +218,7 @@ public class SemanticChecker implements ASTVisitor {
             if (!((funcType) it.head.type).parameters.get(i).equal(it.parameters.get(i).type))
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
-        it.type = it.head.type;
+        it.type = ((funcType)it.head.type).type;
     }
 
     @Override
@@ -238,7 +239,7 @@ public class SemanticChecker implements ASTVisitor {
         if (type.dim - 1 == 0)
         	it.type = type.type;
         else
-        	it.type = new arrayType(type.type.name, type.dim - 1);
+        	it.type = new arrayType(type.type, type.dim - 1);
     }
 
     @Override
@@ -248,9 +249,13 @@ public class SemanticChecker implements ASTVisitor {
             case "++":
             	if (!it.num.isAssignable)
                 	throw new semanticError("isn't assignable", it.pos);
+            	it.isAssignable = true;
+            	break;
             case "--":
                 if (!it.num.isAssignable)
                 	throw new semanticError("isn't assignable", it.pos);
+                it.isAssignable = true;
+                break;
             case "+":
             	if (!it.num.type.isInt)
             		throw new semanticError("after + isn't int", it.pos);
@@ -295,8 +300,9 @@ public class SemanticChecker implements ASTVisitor {
 			throw new semanticError("binary type isn't int", it.pos);
         if ((it.op.equals("&&") || it.op.equals("||")) && !it.num1.type.isBool)
             throw new semanticError("binary type isn't bool", it.pos);
-		if (it.num1.type.isString && !it.op.equals("+"))
-			throw new semanticError("string with not add", it.pos);
+		if (it.num1.type.isString && !it.op.equals("+") && !it.op.equals("<") && !it.op.equals("<=")
+                && !it.op.equals(">") && !it.op.equals(">=") && !it.op.equals("==") && !it.op.equals("!="))
+			throw new semanticError("string with invalid binaryop", it.pos);
         if (it.op.equals("<") || it.op.equals(">") || it.op.equals("<=") || it.op.equals(">=")
                 || it.op.equals("==") || it.op.equals("!="))
             it.type = new Type("bool");
@@ -308,7 +314,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(assignExprNode it) {
     	it.num1.accept(this);
 		it.num2.accept(this);
-		if (!it.num1.type.equal(it.num2.type))
+		if (!it.num2.type.isNull && !it.num1.type.equal(it.num2.type))
 			throw new semanticError("mismatched binaryExpr type", it.pos);
 		if (!it.num1.isAssignable)
 			throw new semanticError("invalid assign", it.pos);
@@ -336,12 +342,14 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(returnStatNode it) {
     	haveReturned = true;
         if (it.val == null) {
-        	if (returnType.isVoid == false)
-        		throw new semanticError("mismatched return type", it.pos);
+        	if (!returnType.isVoid)
+        		throw new semanticError("mismatched return type(null)", it.pos);
         } else {
             it.val.accept(this);
-            if (!it.val.type.equal(returnType))
-            	throw new semanticError("mismatched return type", it.pos);
+            if (it.val.type == null)
+                throw new semanticError("mismatched return type1", it.pos);
+            if (!it.val.type.equal(returnType) && !it.val.type.isNull)
+            	throw new semanticError("mismatched return type2", it.pos);
         }
     }
 

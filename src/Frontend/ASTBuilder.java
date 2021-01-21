@@ -74,8 +74,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitBasicType(MxStarParser.BasicTypeContext ctx) {
-        typeNode t = new typeNode(new position(ctx));
-        t.type = new arrayType(ctx.getText(), 0);
+        typeNode t = new typeNode(new position(ctx), ctx.getText(), 0);
         return t;
     }
 
@@ -111,8 +110,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
         if (ctx.type() != null)
             return visit(ctx.type());
         else {
-            typeNode t = new typeNode(new position(ctx));
-            t.type = new arrayType("void", 0);
+            typeNode t = new typeNode(new position(ctx),"void", 0);
             return t;
         }
     }
@@ -177,7 +175,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitNullExpr(MxStarParser.NullExprContext ctx){
         if (ctx.Null() != null)
-            return new thisExprNode(new position(ctx));
+            return new nullExprNode(new position(ctx));
         return null;
     }
 
@@ -197,16 +195,14 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
         for (ParserRuleContext ch : ctx.expr()) {
             exprs.add((ExprNode) visit(ch));
         }
-        typeNode t = new typeNode(new position(ctx));
-        t.type = new arrayType(ctx.basicType().getText(), ctx.LeftBracket().size());
-        return new creatorExprNode(new position(ctx), t, exprs);
+        typeNode t = new typeNode(new position(ctx), ctx.basicType().getText(), ctx.LeftBracket().size());
+        return new creatorExprNode(new position(ctx), t.getType(), t, exprs);
     }
 
     @Override
     public ASTNode visitRestCreator(MxStarParser.RestCreatorContext ctx) {
-        typeNode t = new typeNode(new position(ctx));
-        t.type = new arrayType(ctx.basicType().getText(), 0);
-        return new creatorExprNode(new position(ctx), t, null);
+        typeNode t = new typeNode(new position(ctx), ctx.basicType().getText(), 0);
+        return new creatorExprNode(new position(ctx), t.getType(), t, null);
     }
 
     @Override
@@ -217,11 +213,11 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitFuncExpr(MxStarParser.FuncExprContext ctx) {
     //    funcExprNode t = new funcExprNode(new position(ctx));
-        ExprNode head = (ExprNode) visit(ctx.expr());/*
-        if (head instanceof memberExpr) {
-            ((memberExpr) head).isFunc = true;
+        ExprNode head = (ExprNode) visit(ctx.expr());
+        if (head instanceof memberExprNode) {
+            ((memberExprNode) head).isFunc = true;
             head.isAssignable = false;
-        }*/
+        }
         ArrayList<ExprNode> para;
         if (ctx.exprs() != null)
             para = ((exprsExprNode) visit(ctx.exprs())).exprs;
