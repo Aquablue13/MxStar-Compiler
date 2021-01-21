@@ -1,4 +1,5 @@
-// Generated from MxStar.g4 by ANTLR 4.6
+// Generated from D:/MxStar-Compiler/src/Parser\MxStar.g4 by ANTLR 4.9
+package Parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -75,6 +76,30 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBasicType(MxStarParser.BasicTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBasicType(MxStarParser.BasicTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOneVarDef(MxStarParser.OneVarDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOneVarDef(MxStarParser.OneVarDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFuncDef(MxStarParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -99,13 +124,25 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOnevarDef(MxStarParser.OnevarDefContext ctx) { }
+	@Override public void enterParameters(MxStarParser.ParametersContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOnevarDef(MxStarParser.OnevarDefContext ctx) { }
+	@Override public void exitParameters(MxStarParser.ParametersContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParameter(MxStarParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(MxStarParser.ParameterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -339,25 +376,13 @@ public class MxStarBaseListener implements MxStarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameters(MxStarParser.ParametersContext ctx) { }
+	@Override public void enterExprs(MxStarParser.ExprsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameters(MxStarParser.ParametersContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParameter(MxStarParser.ParameterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParameter(MxStarParser.ParameterContext ctx) { }
+	@Override public void exitExprs(MxStarParser.ExprsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

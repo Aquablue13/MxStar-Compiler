@@ -1,4 +1,5 @@
-// Generated from MxStar.g4 by ANTLR 4.6
+// Generated from D:/MxStar-Compiler/src/Parser\MxStar.g4 by ANTLR 4.9
+package Parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -40,6 +41,18 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType(MxStarParser.TypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MxStarParser#basicType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBasicType(MxStarParser.BasicTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MxStarParser#oneVarDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOneVarDef(MxStarParser.OneVarDefContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MxStarParser#funcDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -52,11 +65,17 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncType(MxStarParser.FuncTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MxStarParser#onevarDef}.
+	 * Visit a parse tree produced by {@link MxStarParser#parameters}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOnevarDef(MxStarParser.OnevarDefContext ctx);
+	T visitParameters(MxStarParser.ParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MxStarParser#parameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter(MxStarParser.ParameterContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code prefixExpr}
 	 * labeled alternative in {@link MxStarParser#expr}.
@@ -191,17 +210,11 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRestCreator(MxStarParser.RestCreatorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MxStarParser#parameters}.
+	 * Visit a parse tree produced by {@link MxStarParser#exprs}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameters(MxStarParser.ParametersContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link MxStarParser#parameter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParameter(MxStarParser.ParameterContext ctx);
+	T visitExprs(MxStarParser.ExprsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MxStarParser#block}.
 	 * @param ctx the parse tree

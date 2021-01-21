@@ -1,4 +1,5 @@
-// Generated from MxStar.g4 by ANTLR 4.6
+// Generated from D:/MxStar-Compiler/src/Parser\MxStar.g4 by ANTLR 4.9
+package Parser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -57,6 +58,26 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitType(MxStarParser.TypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MxStarParser#basicType}.
+	 * @param ctx the parse tree
+	 */
+	void enterBasicType(MxStarParser.BasicTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxStarParser#basicType}.
+	 * @param ctx the parse tree
+	 */
+	void exitBasicType(MxStarParser.BasicTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MxStarParser#oneVarDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterOneVarDef(MxStarParser.OneVarDefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxStarParser#oneVarDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitOneVarDef(MxStarParser.OneVarDefContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MxStarParser#funcDef}.
 	 * @param ctx the parse tree
 	 */
@@ -77,15 +98,25 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitFuncType(MxStarParser.FuncTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxStarParser#onevarDef}.
+	 * Enter a parse tree produced by {@link MxStarParser#parameters}.
 	 * @param ctx the parse tree
 	 */
-	void enterOnevarDef(MxStarParser.OnevarDefContext ctx);
+	void enterParameters(MxStarParser.ParametersContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MxStarParser#onevarDef}.
+	 * Exit a parse tree produced by {@link MxStarParser#parameters}.
 	 * @param ctx the parse tree
 	 */
-	void exitOnevarDef(MxStarParser.OnevarDefContext ctx);
+	void exitParameters(MxStarParser.ParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MxStarParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(MxStarParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MxStarParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(MxStarParser.ParameterContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code prefixExpr}
 	 * labeled alternative in {@link MxStarParser#expr}.
@@ -315,25 +346,15 @@ public interface MxStarListener extends ParseTreeListener {
 	 */
 	void exitRestCreator(MxStarParser.RestCreatorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MxStarParser#parameters}.
+	 * Enter a parse tree produced by {@link MxStarParser#exprs}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameters(MxStarParser.ParametersContext ctx);
+	void enterExprs(MxStarParser.ExprsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link MxStarParser#parameters}.
+	 * Exit a parse tree produced by {@link MxStarParser#exprs}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameters(MxStarParser.ParametersContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MxStarParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameter(MxStarParser.ParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MxStarParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameter(MxStarParser.ParameterContext ctx);
+	void exitExprs(MxStarParser.ExprsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MxStarParser#block}.
 	 * @param ctx the parse tree

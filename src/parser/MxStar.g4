@@ -11,11 +11,19 @@ classDef :
 ;
 
 varDef :
-	type onevarDef (',' onevarDef)*
+	type oneVarDef (',' oneVarDef)*
 ;
 
 type :
-	(Bool | Int | String | Identifier) ('[' ']')*
+	basicType ('[' ']')*
+;
+
+basicType :
+	Bool | Int | String | Identifier
+;
+
+oneVarDef :
+	Identifier (Assign expr)?
 ;
 
 funcDef :
@@ -24,52 +32,54 @@ funcDef :
 
 funcType : type | Void;
 
-onevarDef :
-	Identifier (Assign expr)?
+parameters :
+	parameter (',' parameter)*
 ;
+
+parameter : type Identifier;
 
 expr :
 	atomExpression																#atomExpr
-	| New creator																#creatorExpr
+	| <assoc=right> New creator													#creatorExpr
 	| expr '.' Identifier 														#memberExpr
-	| Identifier ('(' parameters? ')')											#funcExpr
+	| Identifier ('(' exprs? ')')												#funcExpr
 	| '(' expr ')'																#parenExpr
 	| expr '[' expr ']'															#subscriptExpr
 	| expr (DbAdd | DbSub) 														#suffixExpr
-	| <assoc = right> (Not | LNot | DbAdd | DbSub | Add | Sub) expr 			#prefixExpr
-	| expr (Mul | Div | Mod) expr 												#binaryExpr
-	| expr (Add | Sub) expr 													#binaryExpr
-	| expr (LSh | RSh) expr 													#binaryExpr
-	| expr (Les | LesEq | Gre | GreEq) expr 									#binaryExpr
-	| expr (Eq | NEq) expr 														#binaryExpr
-	| expr And expr 															#binaryExpr
-	| expr Xor expr 															#binaryExpr
-	| expr Or expr 																#binaryExpr
-	| expr LAnd expr 															#binaryExpr
-	| expr LOr expr 															#binaryExpr
-	| <assoc = right> expr Assign expr 											#assignExpr
+	| <assoc = right> op=(DbAdd | DbSub) expr 									#prefixExpr
+	| <assoc = right> op=(Add | Sub) expr 										#prefixExpr
+	| <assoc = right> op=(Not | LNot) expr 										#prefixExpr
+	| expr op=(Mul | Div | Mod) expr 											#binaryExpr
+	| expr op=(Add | Sub) expr 													#binaryExpr
+	| expr op=(LSh | RSh) expr 													#binaryExpr
+	| expr op=(Les | LesEq | Gre | GreEq) expr 									#binaryExpr
+	| expr op=(Eq | NEq) expr 													#binaryExpr
+	| expr op=And expr 															#binaryExpr
+	| expr op=Xor expr 															#binaryExpr
+	| expr op=Or expr 															#binaryExpr
+	| expr op=LAnd expr 														#binaryExpr
+	| expr op=LOr expr 															#binaryExpr
+	| <assoc = right> expr op=Assign expr 										#assignExpr
 ;
 
 atomExpression :
 	Integer 																	#intExpr
 	| Identifier																#identifierExpr
 	| StringValue																#stringExpr
-	| (True | False)															#boolExpr
+	| BoolValue																	#boolExpr
 	| This 																		#thisExpr
 	| Null 																		#nullExpr
 ;
 
 creator :
-	(Bool | Int | String | Identifier) ('[' expr ']')+ ('[' ']')+ ('[' expr ']')+ 	#errorCreator
-	| (Bool | Int | String | Identifier) ('[' expr ']')+ ('[' ']')*				 	#arrayCreator
-	| (Bool | Int | String | Identifier) ('(' ')')? 								#restCreator
+	basicType ('[' expr ']')+ ('[' ']')+ ('[' expr ']')+ 	#errorCreator
+	| basicType ('[' expr ']')+ ('[' ']')*				 	#arrayCreator
+	| basicType ('(' ')')? 								#restCreator
 ;
 
-parameters :
-	parameter (',' parameter)*
+exprs :
+	expr (',' expr)*
 ;
-
-parameter : type Identifier;
 
 block :
 	('{' statement* '}')
@@ -167,6 +177,8 @@ Integer :
 ;
 
 StringValue : '"' Char* '"';
+
+BoolValue : True | False;
 
 fragment
 Char :
