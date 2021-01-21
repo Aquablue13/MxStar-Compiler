@@ -68,8 +68,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitType(MxStarParser.TypeContext ctx) {
-        typeNode t = new typeNode(new position(ctx));
-        t.type = new arrayType(ctx.basicType().getText(), ctx.LeftBracket().size());
+        typeNode t = new typeNode(new position(ctx), ctx.basicType().getText(), ctx.LeftBracket().size());
         return t;
     }
 

@@ -28,10 +28,10 @@ public class TypeCollector implements ASTVisitor {
 
     @Override public void visit(funcDefNode it) {
         if (className == null) {
-            funcType put = globalScope.funcs.put(it.name, new funcType(it.type.type));
+            funcType put = globalScope.funcs.put(it.name, new funcType(it.type.type.name));
             it.parameters.forEach(unit -> globalScope.funcs.get(it.name).parameters.add(unit.type.type));
         } else {
-            ((classType) globalScope.types.get(className)).funcs.put(it.name, new funcType(it.type.type));
+            ((classType) globalScope.types.get(className)).funcs.put(it.name, new funcType(it.type.type.name));
             it.parameters.forEach(unit -> ((classType) globalScope.types.get(className)).funcs.get(it.name).parameters.add(unit.type.type));
         }
     }

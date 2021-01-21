@@ -13,9 +13,9 @@ public class funcType extends Type {
     	super(S);
         this.parameters = paras;
     }
-
+/*
     public funcType(Type type) {
-    }
+    }*/
 
     @Override
     public boolean equal(Type t) {

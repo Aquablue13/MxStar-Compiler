@@ -36,13 +36,13 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(varDefNode it) {}
 
     @Override public void visit(funcDefNode it) {
-		localScope.defineFunction(it.name, new funcType(it.name), it.pos);
+		localScope.defineFunction(it.name, new funcType(it.type.type.name), it.pos);
     }
 
     @Override public void visit(typeNode it) {}
 
     @Override public void visit(oneVarDefNode it) {
-    	localScope.defineVariable(it.name, new Type(it.name), it.pos);
+    	localScope.defineVariable(it.name, new funcType(it.type.type.name), it.pos);
     }
 
     @Override public void visit(intExprNode it) {}

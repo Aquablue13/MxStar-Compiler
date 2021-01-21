@@ -18,10 +18,10 @@ import java.io.InputStream;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        InputStream input = System.in;
+    //    InputStream input = System.in;
 
-    //    String file_name = "array-1.mx";
-    //    InputStream input = new FileInputStream(file_name);
+        String file_name = "./testcases/sema/array-package/array-9.mx";
+        InputStream input = new FileInputStream(file_name);
 
         try {
             RootNode ASTRoot;
