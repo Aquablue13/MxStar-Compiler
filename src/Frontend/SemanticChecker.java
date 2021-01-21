@@ -295,9 +295,9 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(binaryExprNode it) {
     	it.num1.accept(this);
 		it.num2.accept(this);
-		if (!it.num1.type.equal(it.num2.type))
+		if (!it.num1.type.equal(it.num2.type) && it.num2.type != null)
 			throw new semanticError("dismatched binaryExpr type", it.pos);
-		if (!it.num1.type.isInt && !it.num1.type.isString && !it.num1.type.isBool)
+		if (!it.num1.type.isInt && !it.num1.type.isString && !it.num1.type.isBool && !it.num2.type.isNull)
             throw new semanticError("wrong binaryExpr type", it.pos);
 		if ((it.op.equals("-") || it.op.equals("*") || it.op.equals("/") || it.op.equals("%")
                 || it.op.equals("<<") || it.op.equals(">>") || it.op.equals("&")

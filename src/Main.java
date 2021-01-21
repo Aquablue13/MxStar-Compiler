@@ -11,8 +11,6 @@ import Util.Scope;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class Main {
@@ -20,9 +18,9 @@ public class Main {
 
        InputStream input = System.in;
 /*
-        String file_name = "./testcases/sema/all/class-11.mx";
-        InputStream input = new FileInputStream(file_name);*/
-
+        String file_name = "./testcases/sema/all/basic-59.mx";
+        InputStream input = new FileInputStream(file_name);
+*/
         try {
             RootNode ASTRoot;
             MxStarLexer lexer = new MxStarLexer(CharStreams.fromStream(input));
