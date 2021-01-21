@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class position {
-    private int row, column;
+public class position extends Throwable {
+    public int row, column;
 
     public position() {
         this.row = 0;

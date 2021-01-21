@@ -15,7 +15,7 @@ varDef :
 ;
 
 type :
-	basicType ('[' ']')*
+	basicType (LeftBracket RightBracket)*
 ;
 
 basicType :
@@ -44,8 +44,8 @@ expr :
 	| expr '.' Identifier 														#memberExpr
 	| Identifier ('(' exprs? ')')												#funcExpr
 	| '(' expr ')'																#parenExpr
-	| expr '[' expr ']'															#subscriptExpr
-	| expr (DbAdd | DbSub) 														#suffixExpr
+	| expr LeftBracket expr RightBracket										#subscriptExpr
+	| expr op=(DbAdd | DbSub) 													#suffixExpr
 	| <assoc = right> op=(DbAdd | DbSub) expr 									#prefixExpr
 	| <assoc = right> op=(Add | Sub) expr 										#prefixExpr
 	| <assoc = right> op=(Not | LNot) expr 										#prefixExpr
@@ -72,8 +72,8 @@ atomExpression :
 ;
 
 creator :
-	basicType ('[' expr ']')+ ('[' ']')+ ('[' expr ']')+ 	#errorCreator
-	| basicType ('[' expr ']')+ ('[' ']')*				 	#arrayCreator
+	basicType (LeftBracket expr RightBracket)+ (LeftBracket RightBracket)+ (LeftBracket expr RightBracket)+ 	#errorCreator
+	| basicType (LeftBracket expr RightBracket)+ (LeftBracket RightBracket)*				 	#arrayCreator
 	| basicType ('(' ')')? 								#restCreator
 ;
 
@@ -86,7 +86,7 @@ block :
 ;
 
 statement :
-	varDef ';'																	#vardefStat
+	varDef ';'																	#varDefStat
 
 	| Break ';'																	#breakStat
 	| Continue ';'																#continueStat
@@ -166,6 +166,9 @@ Eq : '==';
 NEq : '!=';
 
 Assign : '=';
+
+LeftBracket : '[';
+RightBracket : ']';
 
 Identifier :
 	[a-zA-Z] [a-zA-Z0-9]*

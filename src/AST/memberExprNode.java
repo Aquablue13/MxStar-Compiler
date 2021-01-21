@@ -4,7 +4,7 @@ import Util.position;
 
 public class memberExprNode extends ExprNode {
     public ExprNode head;
-    String member;
+    public String member;
     public boolean isFunc = false;
 
     public memberExprNode(position pos, ExprNode head, String member) {

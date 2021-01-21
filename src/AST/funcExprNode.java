@@ -8,6 +8,10 @@ public class funcExprNode extends ExprNode {
     public ExprNode head;
     public ArrayList<ExprNode> parameters;
 
+    public funcExprNode(position pos) {
+        super(pos);
+    }
+
     public funcExprNode(position pos, ExprNode head, ArrayList<ExprNode> para) {
         super(pos);
         this.head = head;

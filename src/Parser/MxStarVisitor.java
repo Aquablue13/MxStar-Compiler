@@ -222,12 +222,12 @@ public interface MxStarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(MxStarParser.BlockContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code vardefStat}
+	 * Visit a parse tree produced by the {@code varDefStat}
 	 * labeled alternative in {@link MxStarParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVardefStat(MxStarParser.VardefStatContext ctx);
+	T visitVarDefStat(MxStarParser.VarDefStatContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code breakStat}
 	 * labeled alternative in {@link MxStarParser#statement}.

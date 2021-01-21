@@ -1,8 +1,10 @@
 package Util.Type;
 
-abstract public class Type {
-    String name;
+public class Type {
+    public String name;
     public boolean isInt = false, isBool = false, isString = false, isVoid = false, isNull = false;
+
+    public Type() {}
 
     public Type(String name) {
         this.name = name;
@@ -16,6 +18,6 @@ abstract public class Type {
     }
 
     public boolean equal(Type t) {
-        return this.name == t.name;
+        return this.name.equals(t.name);
     }
 }

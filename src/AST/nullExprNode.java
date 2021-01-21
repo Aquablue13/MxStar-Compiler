@@ -3,6 +3,7 @@ package AST;
 import Util.position;
 
 public class nullExprNode extends ExprNode {
+
     public nullExprNode(position pos) {
         super(pos);
     }

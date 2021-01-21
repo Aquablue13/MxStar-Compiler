@@ -1,13 +1,12 @@
 package AST;
 
 import Util.position;
-
 import java.util.ArrayList;
 
-public class varDefNode extends StatNode {
-    public ArrayList<oneVarDefNode> vars = new ArrayList<>();
+public class exprsExprNode extends ExprNode {
+    public ArrayList<ExprNode> exprs = new ArrayList<>();
 
-    public varDefNode(position pos) {
+    public exprsExprNode(position pos) {
         super(pos);
     }
 

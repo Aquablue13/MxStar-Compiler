@@ -3,7 +3,7 @@ package AST;
 import Util.position;
 
 public class oneVarDefNode extends StatNode {
-    typeNode type;
+    public typeNode type;
     public String name;
     public ExprNode expr;
 

@@ -5,7 +5,7 @@ import Util.position;
 public class exprStatNode extends StatNode {
     public ExprNode expr;
 
-    public exprStatNodeStmt(position pos, ExprNode expr) {
+    public exprStatNode(position pos, ExprNode expr) {
         super(pos);
         this.expr = expr;
     }

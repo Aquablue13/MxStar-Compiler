@@ -1,7 +1,7 @@
 package Util;
 
-import Util.Type.Type;
-import Util.error.semanticError;
+import Util.Type.*;
+import Util.Error.semanticError;
 import Util.position;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class Scope {
     }
 
     public void defineVariable(String name, Type type, position pos) {
-        if (this.containsType(name, true, pos))
+        if (this.containsType(name, true))
             throw new semanticError("duplicated with type name", pos);
         if (vars.containsKey(name))
             throw new semanticError("variable redefine", pos);
@@ -45,7 +45,7 @@ public class Scope {
     }
 
     public void defineFunction(String name, funcType type, position pos) {
-        if (this.containsType(name, true, pos))
+        if (this.containsType(name, true))
             throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);

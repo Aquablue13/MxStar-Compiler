@@ -5,7 +5,7 @@ import Util.position;
 public class intExprNode extends ExprNode {
 	public int val;
 
-    public intExprNode(position pos) {
+    public intExprNode(position pos, int val) {
         super(pos);
         this.val = val;
     }

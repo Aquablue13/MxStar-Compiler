@@ -10,7 +10,11 @@ public class funcDefNode extends DefNode {
     public ArrayList<oneVarDefNode> parameters;
     public blockStatNode block;
 
-    public funcDef(position pos, TypeNode type, String name, ArrayList<oneVarDefNode> paras, blockStatNode block) {
+    public funcDefNode(position pos) {
+        super(pos);
+    }
+
+    public funcDefNode(position pos, typeNode type, String name, ArrayList<oneVarDefNode> paras, blockStatNode block) {
         super(pos);
         this.type = type;
         this.name = name;

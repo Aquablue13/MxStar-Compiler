@@ -1,6 +1,6 @@
 package AST;
 
-import Util.Type;
+import Util.Type.Type;
 import Util.position;
 
 abstract public class ExprNode extends ASTNode {

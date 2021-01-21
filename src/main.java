@@ -3,8 +3,8 @@ import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
 import Frontend.SymbolCollector;
 import Frontend.TypeCollector;
-import Parser.MxLexer;
-import Parser.MxParser;
+import Parser.MxStarLexer;
+import Parser.MxStarParser;
 import Util.MxErrorListener;
 import Util.error.Error;
 import Util.Scope;
@@ -21,10 +21,10 @@ public class Main {
 
         try {
             RootNode ASTRoot;
-            MxLexer lexer = new MxLexer(CharStreams.fromStream(input));
+            MxStarLexer lexer = new MxStarLexer(CharStreams.fromStream(input));
             lexer.removeErrorListeners();
             lexer.addErrorListener(new MxErrorListener());
-            MxParser parser = new MxParser(new CommonTokenStream(lexer));
+            MxStarParser parser = new MxStarParser(new CommonTokenStream(lexer));
             parser.removeErrorListeners();
             parser.addErrorListener(new MxErrorListener());
             ParseTree parseTreeRoot = parser.program();

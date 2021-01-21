@@ -5,7 +5,7 @@ import Util.position;
 public class boolExprNode extends ExprNode {
 	public boolean val;
 
-    public boolExprNode(position pos) {
+    public boolExprNode(position pos, boolean val) {
         super(pos);
         this.val = val;
     }
