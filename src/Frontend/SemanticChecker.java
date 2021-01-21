@@ -109,7 +109,10 @@ public class SemanticChecker implements ASTVisitor {
             if (it.expr.type == null)
                 throw new semanticError("it.expr.type null", it.pos);
             if (!it.expr.type.isNull && !it.expr.type.equal(globalScope.getType(it.type)))
-            	throw new semanticError("mismatched variable type & original type", it.pos);
+            	throw new semanticError("dismatched variable type & original type", it.pos);
+            if (it.expr.type.isNull && (it.expr.type.equal(new Type("int")) || it.expr.type.equal(new Type("string"))
+                    || it.expr.type.equal(new Type("bool")) || it.expr.type.equal(new Type("void"))))
+                throw new semanticError("dismatched variable type with null", it.pos);
         }
         localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos);
     }
@@ -293,7 +296,9 @@ public class SemanticChecker implements ASTVisitor {
     	it.num1.accept(this);
 		it.num2.accept(this);
 		if (!it.num1.type.equal(it.num2.type))
-			throw new semanticError("mismatched binaryExpr type", it.pos);
+			throw new semanticError("dismatched binaryExpr type", it.pos);
+		if (!it.num1.type.isInt && !it.num1.type.isString && !it.num1.type.isBool)
+            throw new semanticError("wrong binaryExpr type", it.pos);
 		if ((it.op.equals("-") || it.op.equals("*") || it.op.equals("/") || it.op.equals("%")
                 || it.op.equals("<<") || it.op.equals(">>") || it.op.equals("&")
                 || it.op.equals("|") || it.op.equals("^")) && !it.num1.type.isInt)
@@ -316,6 +321,9 @@ public class SemanticChecker implements ASTVisitor {
 		it.num2.accept(this);
 		if (!it.num2.type.isNull && !it.num1.type.equal(it.num2.type))
 			throw new semanticError("mismatched binaryExpr type", it.pos);
+        if (it.num2.type.isNull && (it.num1.type.equal(new Type("int")) || it.num1.type.equal(new Type("string"))
+                || it.num1.type.equal(new Type("bool")) || it.num1.type.equal(new Type("void"))))
+            throw new semanticError("dismatched variable type with null", it.pos);
 		if (!it.num1.isAssignable)
 			throw new semanticError("invalid assign", it.pos);
 		it.type = it.num1.type;
@@ -347,9 +355,12 @@ public class SemanticChecker implements ASTVisitor {
         } else {
             it.val.accept(this);
             if (it.val.type == null)
-                throw new semanticError("mismatched return type1", it.pos);
+                throw new semanticError("return type is null", it.pos);
             if (!it.val.type.equal(returnType) && !it.val.type.isNull)
-            	throw new semanticError("mismatched return type2", it.pos);
+            	throw new semanticError("mismatched return type", it.pos);
+            if (it.val.type.isNull && (it.val.type.equal(new Type("int")) || it.val.type.equal(new Type("string"))
+            || it.val.type.equal(new Type("bool")) || it.val.type.equal(new Type("void"))))
+                throw new semanticError("mismatched return type with null", it.pos);
         }
     }
 
