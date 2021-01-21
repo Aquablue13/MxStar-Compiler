@@ -14,6 +14,6 @@ public class classType extends Type {
 
     @Override
     public boolean equal(Type t) {
-        return (t.isNull == true) || ((t instanceof classType) && (this.name.equal(((classType) t).name)));
+        return (t.isNull == true) || ((t instanceof classType) && (this.name.equals(((classType) t).name)));
     }
 }

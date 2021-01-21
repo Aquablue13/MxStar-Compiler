@@ -6,18 +6,22 @@ import Frontend.TypeCollector;
 import Parser.MxStarLexer;
 import Parser.MxStarParser;
 import Util.MxErrorListener;
-import Util.error.Error;
+import Util.Error.Error;
 import Util.Scope;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
         InputStream input = System.in;
+
+    //    String file_name = "array-1.mx";
+    //    InputStream input = new FileInputStream(file_name);
 
         try {
             RootNode ASTRoot;

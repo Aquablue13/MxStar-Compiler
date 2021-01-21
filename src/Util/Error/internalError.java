@@ -1,4 +1,4 @@
-package Util.error;
+package Util.Error;
 
 import Util.position;
 
