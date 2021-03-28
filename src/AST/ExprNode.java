@@ -2,10 +2,16 @@ package AST;
 
 import Util.Type.Type;
 import Util.position;
+//import IR.Operand.Operand;
 
 abstract public class ExprNode extends ASTNode {
-    public Type type;
-	public boolean isAssignable = false;
+    public Type type = new Type();
+    public Type parent = null;
+    public boolean isAssignable = false;
+    public String funcName;
+    /*
+    public Operand operand;
+    public Operand addr = null;*/
 
     public ExprNode(position pos) {
         super(pos);

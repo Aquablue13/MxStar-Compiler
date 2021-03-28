@@ -3,24 +3,30 @@ import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
 import Frontend.SymbolCollector;
 import Frontend.TypeCollector;
+import IR.BasicBlock;
+import IR.BasicBlocks;
+import IR.IRBuilder;
 import Parser.MxStarLexer;
 import Parser.MxStarParser;
 import Util.MxErrorListener;
 import Util.Error.Error;
 import Util.Scope;
+import Util.globalScope;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.InputStream;
+import java.io.FileInputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
        InputStream input = System.in;
-/*
-        String file_name = "./testcases/sema/all/basic-59.mx";
-        InputStream input = new FileInputStream(file_name);
-*/
+
+     //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
+    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/e1.mx";
+      //  InputStream input = new FileInputStream(file_name);
+
         try {
             RootNode ASTRoot;
             MxStarLexer lexer = new MxStarLexer(CharStreams.fromStream(input));
@@ -32,11 +38,18 @@ public class Main {
             ParseTree parseTreeRoot = parser.program();
             ASTBuilder astBuilder = new ASTBuilder();
             ASTRoot = (RootNode) astBuilder.visit(parseTreeRoot);
-            Scope global = new Scope(null);
+            globalScope global = new globalScope(null);
             new SymbolCollector(global).visit(ASTRoot);
             new TypeCollector(global).visit(ASTRoot);
             global.vars.clear();
-            new SemanticChecker(global).visit(ASTRoot);
+            // new SemanticChecker(global).visit(ASTRoot);
+
+            BasicBlocks Blocks = new BasicBlocks();
+            new SemanticChecker(Blocks, global).visit(ASTRoot);
+            new IRBuilder(Blocks, global).visit(ASTRoot);
+            //  Blocks.printIR();
+            Blocks.init();
+            Blocks.printout();
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();

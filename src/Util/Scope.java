@@ -1,20 +1,74 @@
 package Util;
 
-import AST.*;
 import Util.Type.*;
 import Util.Error.semanticError;
+import Util.Error.internalError;
 import Util.position;
+import Util.RegIdAllocator;
+import IR.Register;
+import AST.*;
 
 import java.util.HashMap;
 
 public class Scope {
+    public enum ScopeType {
+        initScope, classScope, funcScope, loopScope
+    }
+
+    public ScopeType scopeType;
+    public RegIdAllocator regAlloca = new RegIdAllocator();
     public HashMap<String, Type> vars = new HashMap<>();
+    public HashMap<String, Integer> varIDs = new HashMap<>();
+    public HashMap<String, Register> variablesRegId = new HashMap<>();
     public HashMap<String, funcType> funcs = new HashMap<>();
+    private HashMap<String, Integer> funcsInClass = new HashMap<>();
     public HashMap<String, Type> types = new HashMap<>();
     public Scope parentScope;
+    public classType classInfo = null;
+    int cnt = 0;
 
     public Scope(Scope parentScope) {
         this.parentScope = parentScope;
+        this.scopeType = ScopeType.initScope;
+        this.regAlloca = new RegIdAllocator();
+        if (parentScope != null)
+            regAlloca = parentScope.regAlloca;
+    }
+/*
+    public boolean isClassScope() {
+        if (scopeType == initScope)
+            return false;
+        if (scopeType == classScope)
+            return true;
+        return parentScope.isClassScope();
+    }
+
+    public boolean isFuncScope() {
+        if (scopeType == initScope)
+            return false;
+        if (scopeType == funcScope)
+            return true;
+        return parentScope.isFuncScope();
+    }
+
+    public boolean isLoopScope() {
+        if (scopeType == initScope)
+            return false;
+        if (scopeType == loopScope)
+            return true;
+        return parentScope.isLoopScope();
+    }
+*/
+    public Register defineVariable(String name, Type type, position pos, int typ) {
+        if (this.containsType(name, true))
+            throw new semanticError("duplicated with type name", pos);
+        if (vars.containsKey(name))
+            throw new semanticError("variable redefine", pos);
+        vars.put(name, type);
+        varIDs.put(name, cnt++);
+        Register result = regAlloca.alloc(typ);
+        variablesRegId.put(name, result);
+        return result;
     }
 
     public void defineVariable(String name, Type type, position pos) {
@@ -45,12 +99,38 @@ public class Scope {
                 return null;
     }
 
-    public void defineFunction(String name, funcType type, position pos) {/*
+    public int getVariableID(String name, boolean lookUpon) {
+        if (varIDs.containsKey(name))
+            return varIDs.get(name);
+        else
+            if (parentScope != null && lookUpon)
+                return parentScope.getVariableID(name, true);
+            else
+                return 0;
+    }
+
+    public Register getRegIdVariable(String name, boolean lookUpon) {
+        if (variablesRegId.containsKey(name))
+            return variablesRegId.get(name);
+        else
+            if (parentScope != null && lookUpon)
+                return parentScope.getRegIdVariable(name, true);
+            else
+                throw new internalError("getRegIdVariable failed", new position(0, 0));
+    }
+
+    public void defineFunction(String name, funcType type, position pos) {
         if (this.containsType(name, true))
-            throw new semanticError("duplicated with type name", pos);*/
+            throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
         funcs.put(name, type);
+        if (classInfo == null) {
+            funcsInClass.put(name, 0);
+        }
+        else {
+            funcsInClass.put(name, 1);
+        }
     }
 
     public boolean containsFunction(String name, boolean lookUpon) {
@@ -71,6 +151,16 @@ public class Scope {
                 return parentScope.getFunctionType(name, true);
             else
                 return null;
+    }
+
+    public Integer getFunctionInClass(String name, boolean lookUpon) {
+        if (funcsInClass.containsKey(name))
+            return funcsInClass.get(name);
+        else
+            if (parentScope != null && lookUpon)
+                return parentScope.getFunctionInClass(name, true);
+            else
+                return 0;
     }
 
     public void defineType(String name, Type value, position pos) {

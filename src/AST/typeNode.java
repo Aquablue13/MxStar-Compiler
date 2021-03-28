@@ -31,4 +31,8 @@ public class typeNode extends ASTNode {
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }
+
+    public boolean isClass() {
+        return (typeName.equals("Class"));
+    }
 }
