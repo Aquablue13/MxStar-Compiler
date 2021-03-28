@@ -24,8 +24,23 @@ public class Main {
        InputStream input = System.in;
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
-    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/e1.mx";
-      //  InputStream input = new FileInputStream(file_name);
+     //   String file_name = "D:/MxStar-Compiler/testcases/sema/string-package/string-1.mx";
+     //   InputStream input = new FileInputStream(file_name);
+        boolean onlySemantic = false, onlyIR = false;
+        for (String arg : args) {
+            switch (arg) {
+                case "-semantic":
+                    onlySemantic = true;
+                    break;
+                case "-IR":
+                    onlyIR = true;
+                    break;
+                case "-test":
+                    String name = "test1.mx";
+                    input = new FileInputStream(name);
+                    break;
+            }
+        }
 
         try {
             RootNode ASTRoot;
@@ -46,10 +61,12 @@ public class Main {
 
             BasicBlocks Blocks = new BasicBlocks();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
-            new IRBuilder(Blocks, global).visit(ASTRoot);
-            //  Blocks.printIR();
-            Blocks.init();
-            Blocks.printout();
+            if (!onlySemantic) {
+                new IRBuilder(Blocks, global).visit(ASTRoot);
+                //  Blocks.printIR();
+                Blocks.init();
+                Blocks.printout();
+            }
         } catch (Error er) {
             System.err.println(er.toString());
             throw new RuntimeException();
