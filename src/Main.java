@@ -25,12 +25,15 @@ public class Main {
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/e5.mx";//sema/string-package/string-1.mx";
-      //  InputStream input = new FileInputStream(file_name);
-        boolean onlySemantic = false, onlyIR = false;
+    //    InputStream input = new FileInputStream(file_name);
+        boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
             switch (arg) {
                 case "-semantic":
                     onlySemantic = true;
+                    break;
+                case "-codegen":
+                    codegen = true;
                     break;
             }
         }
@@ -54,7 +57,7 @@ public class Main {
 
             BasicBlocks Blocks = new BasicBlocks();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
-            if (!onlySemantic) {
+            if (codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
                 //  Blocks.printIR();
                 Blocks.init();
