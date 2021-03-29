@@ -628,10 +628,10 @@ public class IRBuilder implements ASTVisitor {
 
 	public Register newMalloc(creatorExprNode it, int i) {
 		if (i >= it.exprs.size()) {
-			if (it.typeNode.isClass() || Blocks.classSizs.containsKey(it.type.name) && it.exprs.size() == ((arrayType)it.type).dim) {
+			if ((it.type instanceof classType) || Blocks.classSizs.containsKey(it.typeNode.typeName) && it.exprs.size() == ((arrayType)it.type).dim) {
 				Function func = new Function(IRFuncType.LOAD);
 				func.regs.add(new Register(10, 0, false));
-				func.regs.add(new Register(Blocks.classSizs.get(it.type.name) << 2, 8, false));
+				func.regs.add(new Register(Blocks.classSizs.get(it.typeNode.typeName) << 2, 8, false));
 				curBlock.funcs.add(func);
 				
 				func = new Function(IRFuncType.CALL);
@@ -644,11 +644,11 @@ public class IRBuilder implements ASTVisitor {
 				func.regs.add(new Register(10, 0, false));
 				curBlock.funcs.add(func);
 
-				Scope temp_scope = globalScope.getScopeFromName(it.type.name);
-				if (temp_scope.containsFunction(it.type.name, false)) {
+				Scope temp_scope = globalScope.getScopeFromName(it.typeNode.typeName);
+				if (temp_scope.containsFunction(it.typeNode.typeName, false)) {
 
 					func = new Function(IRFuncType.CALL);
-					func.func = "my_c_" + it.type.name + "_" + it.type.name;
+					func.func = "my_c_" + it.typeNode.typeName + "_" + it.typeNode.typeName;
 					curBlock.funcs.add(func);
 				};
 				return nowRegId;

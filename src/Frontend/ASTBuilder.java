@@ -202,7 +202,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
     @Override
     public ASTNode visitRestCreator(MxStarParser.RestCreatorContext ctx) {
         typeNode t = new typeNode(new position(ctx), ctx.basicType().getText(), 0);
-        return new creatorExprNode(new position(ctx), t.getType(), t, null);
+        return new creatorExprNode(new position(ctx), t.getType(), t, new ArrayList<>());
     }
 
     @Override

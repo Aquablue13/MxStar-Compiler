@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class creatorExprNode extends ExprNode {
     public typeNode typeNode;
-    public ArrayList<ExprNode> exprs;
+    public ArrayList<ExprNode> exprs = new ArrayList<>();
 
     public creatorExprNode(position pos, Type type, typeNode typeNode, ArrayList<ExprNode> exprs) {
         super(pos, type);
