@@ -25,7 +25,7 @@ public class Main {
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/e1.mx";//sema/string-package/string-1.mx";
-      //  InputStream input = new FileInputStream(file_name);
+    //    InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, onlyIR = false;
         for (String arg : args) {
             switch (arg) {

@@ -286,7 +286,7 @@ public class IRBuilder implements ASTVisitor {
 		it.parameters.forEach(unit -> unit.accept(this));
 
 		int t = 0;
-		String name = (it.head).funcName;
+		String name = ((identifierExprNode)it.head).name;
 		t = it.scope.getFunctionInClass(name, true);
 
 		if (it.parameters.size() > 0) {
