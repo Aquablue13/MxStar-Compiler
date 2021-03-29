@@ -17,11 +17,17 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.File;
+import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
        InputStream input = System.in;
+
+        File file = new File("output.s");
+        PrintStream stream = new PrintStream(file);
+        System.setOut(stream);
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/e5.mx";//sema/string-package/string-1.mx";
