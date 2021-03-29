@@ -57,7 +57,7 @@ public class Main {
 
             BasicBlocks Blocks = new BasicBlocks();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
-            if (codegen) {
+            if (!onlySemantic && codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
                 //  Blocks.printIR();
                 Blocks.init();
