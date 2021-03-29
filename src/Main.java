@@ -21,11 +21,11 @@ import java.io.FileInputStream;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-     //  InputStream input = System.in;
+       InputStream input = System.in;
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";
-        String file_name = "D:/MxStar-Compiler/testcases/misc-7.mx";//sema/string-package/string-1.mx";
-        InputStream input = new FileInputStream(file_name);
+     //   String file_name = "D:/MxStar-Compiler/testcases/misc-7.mx";//sema/string-package/string-1.mx";
+     //   InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, onlyIR = false;
         for (String arg : args) {
             switch (arg) {
