@@ -2,13 +2,14 @@ package Frontend;
 
 import AST.*;
 import Util.Scope;
+import Util.globalScope;
 import Util.Type.*;
 
 public class TypeCollector implements ASTVisitor {
-	private Scope globalScope;
+	private globalScope globalScope;
     String className = null;
 
-	public TypeCollector(Scope globalScope) {
+	public TypeCollector(globalScope globalScope) {
 		this.globalScope = globalScope;
 	}
 
@@ -24,7 +25,9 @@ public class TypeCollector implements ASTVisitor {
         className = null;
 	}
 
-    @Override public void visit(varDefNode it) {}
+    @Override public void visit(varDefNode it) {
+        it.vars.forEach(unit -> unit.accept(this));
+    }
 
     @Override public void visit(funcDefNode it) {
 	    Type get = globalScope.getType(it.type);

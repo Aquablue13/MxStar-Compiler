@@ -2,12 +2,14 @@ package Frontend;
 
 import AST.*;
 import Util.Scope;
+import Util.globalScope;
 import Util.Type.*;
 
 public class SymbolCollector implements ASTVisitor {
-	private Scope globalScope, localScope;
+	private Scope localScope;
+    private globalScope globalScope;
 
-	public SymbolCollector(Scope globalScope) {
+	public SymbolCollector(globalScope globalScope) {
 		this.globalScope = globalScope;
 	}
 
@@ -18,7 +20,8 @@ public class SymbolCollector implements ASTVisitor {
 		globalScope.defineType("string", new Type("string"), it.pos);
 		globalScope.defineType("void", new Type("void"), it.pos);
 		globalScope.defineType("null", new Type("null"), it.pos);
-		localScope = globalScope;
+		
+        localScope = globalScope;
 		it.body.forEach(unit -> unit.accept(this));
 	}
 
@@ -29,11 +32,15 @@ public class SymbolCollector implements ASTVisitor {
         it.funcs.forEach(unit -> unit.accept(this));
         tmp.vars = localScope.vars;
         tmp.funcs = localScope.funcs;
+        localScope.classInfo = tmp;
+        globalScope.addType(it.name, localScope, it.pos);
         localScope = localScope.parentScope;
         localScope.defineType(it.name, tmp, it.pos);
 	}
 
-    @Override public void visit(varDefNode it) {}
+    @Override public void visit(varDefNode it) {
+        it.vars.forEach(unit -> unit.accept(this));
+    }
 
     @Override public void visit(funcDefNode it) {
 		localScope.defineFunction(it.name, new funcType(it.type.getType().name), it.pos);

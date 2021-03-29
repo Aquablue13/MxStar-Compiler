@@ -61,7 +61,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(classDefNode it) {
     	curClass = (classType) globalScope.types.get(it.name);
         localScope = new Scope(localScope);
-        curClass.vars.forEach((key, val) -> localScope.defineVariable(key, val, it.pos));
+        curClass.vars.forEach((key, val) -> it.regId = localScope.defineVariable(key, val, it.pos, 11));
         curClass.funcs.forEach((key, val) -> localScope.defineFunction(key, val, it.pos));
         it.funcs.forEach(unit -> unit.accept(this));
         if (it.constructor != null) {
