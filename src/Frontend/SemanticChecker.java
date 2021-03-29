@@ -230,9 +230,8 @@ public class SemanticChecker implements ASTVisitor {
             	throw new semanticError("find no such member", it.pos);
         }
         //?
+        it.funcName = it.member;
         it.parent = cur;
-
-    //    it.member.accept(this);  
     }
 
     @Override
