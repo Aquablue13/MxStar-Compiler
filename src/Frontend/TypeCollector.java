@@ -42,12 +42,12 @@ public class TypeCollector implements ASTVisitor {
 
     @Override public void visit(typeNode it) {}
 
-    @Override public void visit(oneVarDefNode it) {/*
+    @Override public void visit(oneVarDefNode it) {
 	    Type get = globalScope.getType(it.type);
         if (className == null)
             globalScope.vars.put(it.name, get);
         else
-            ((classType)globalScope.types.get(className)).vars.put(it.name, get);*/
+            ((classType)globalScope.types.get(className)).vars.put(it.name, get);
     }
 
     @Override public void visit(intExprNode it) {}

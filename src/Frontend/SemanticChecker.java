@@ -43,6 +43,27 @@ public class SemanticChecker implements ASTVisitor {
         funcType toString = new funcType("string");
         toString.parameters.add(new Type("int"));
         this.globalScope.funcs.put("toString", toString);
+
+        //string
+        funcType length = new funcType("int");
+        length.parameters.add(new Type("string"));
+        this.globalScope.funcs.put("length", length);
+
+        funcType substring = new funcType("string");
+        substring.parameters.add(new Type("int"));
+        substring.parameters.add(new Type("int"));
+        this.globalScope.funcs.put("substring", substring);
+
+        funcType parseInt = new funcType("int");
+        this.globalScope.funcs.put("parseInt", parseInt);
+
+        funcType ord = new funcType("int");
+        ord.parameters.add(new Type("ord"));
+        this.globalScope.funcs.put("ord", ord);
+
+        //array
+        funcType size = new funcType("int");
+        this.globalScope.funcs.put("size", size);
     }
 
     @Override
@@ -152,8 +173,12 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(identifierExprNode it) {
     	it.scope = localScope;
-        it.type = localScope.getVariableType(it.name, true);
-        it.regId = localScope.getRegIdVariable(it.name, true);
+        if (localScope.containsVariable(it.name, true))
+            it.type = localScope.getVariableType(it.name, true);
+        else
+            it.type = localScope.getFunctionType(it.name, true);
+        if (localScope.containsVariable(it.name, true))
+            it.regId = localScope.getRegIdVariable(it.name, true);
     }
 
     @Override
