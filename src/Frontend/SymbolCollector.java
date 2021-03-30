@@ -8,6 +8,7 @@ import Util.Type.*;
 public class SymbolCollector implements ASTVisitor {
 	private Scope localScope;
     private globalScope globalScope;
+    private Boolean inClass = false;
 
 	public SymbolCollector(globalScope globalScope) {
 		this.globalScope = globalScope;
@@ -26,6 +27,7 @@ public class SymbolCollector implements ASTVisitor {
 	}
 
 	@Override public void visit(classDefNode it) {
+	    inClass = true;
 		localScope = new Scope(localScope);
         classType tmp = new classType(it.name);
         it.vars.forEach(unit -> unit.accept(this));
@@ -36,6 +38,7 @@ public class SymbolCollector implements ASTVisitor {
         globalScope.addType(it.name, localScope, it.pos);
         localScope = localScope.parentScope;
         localScope.defineType(it.name, tmp, it.pos);
+        inClass = false;
 	}
 
     @Override public void visit(varDefNode it) {
@@ -49,7 +52,13 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(typeNode it) {}
 
     @Override public void visit(oneVarDefNode it) {
-    	localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos);
+        if (globalScope == localScope)
+            localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 2);
+        else
+            if (inClass)
+                localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 11);
+            else
+                localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 1);
     }
 
     @Override public void visit(intExprNode it) {}

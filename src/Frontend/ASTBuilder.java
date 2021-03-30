@@ -207,7 +207,7 @@ public class ASTBuilder extends MxStarBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitMemberExpr(MxStarParser.MemberExprContext ctx) {
-        return new memberExprNode(new position(ctx), (ExprNode) visit(ctx.expr()), ctx.Identifier().getText());
+        return new memberExprNode(new position(ctx), (ExprNode) visit(ctx.expr()), new identifierExprNode(new position(ctx.Identifier()), ctx.Identifier().getText()));
     }
 
     @Override

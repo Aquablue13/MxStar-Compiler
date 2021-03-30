@@ -290,7 +290,7 @@ public class IRBuilder implements ASTVisitor {
 		if (it.head instanceof identifierExprNode)
 			name = ((identifierExprNode)it.head).name;
 		else
-			name = ((memberExprNode)it.head).member;
+			name = ((memberExprNode)it.head).member.name;
 	//	System.out.println(name);
 	//	System.out.println("!!!");
 		t = it.scope.getFunctionInClass(name, true);
@@ -332,8 +332,8 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(assignExprNode it) {
-        it.num1.accept(this);
         it.num2.accept(this);
+        it.num1.accept(this);
 
 		Function func = new Function(IRFuncType.MOVE);
 		func.regs.add(it.num1.regId);
@@ -605,9 +605,9 @@ public class IRBuilder implements ASTVisitor {
     public void visit(subscriptExprNode it) {
 		it.head.accept(this);
 		it.index.accept(this);
-		Register temp = curBlock.regAlloca.alloc(5);
+		Register tmp = curBlock.regAlloca.alloc(5);
 		Function func = new Function(IRFuncType.ADDI);
-		func.regs.add(temp);
+		func.regs.add(tmp);
 		func.regs.add(it.index.regId);
 		func.regs.add(new Register(1, 8, false));
 		curBlock.funcs.add(func);
@@ -615,7 +615,7 @@ public class IRBuilder implements ASTVisitor {
 		func = new Function(IRFuncType.INDEX);
 		func.regs.add(regId);
 		func.regs.add(it.head.regId);
-		func.regs.add(temp);
+		func.regs.add(tmp);
 		curBlock.funcs.add(func);
 
 		it.regId = new Register(regId.id, regId.gr, true);
@@ -624,6 +624,18 @@ public class IRBuilder implements ASTVisitor {
 	@Override
     public void visit(memberExprNode it) {
 		it.head.accept(this);
+		if (it.head.type instanceof classType){
+			Register regId = curBlock.regAlloca.alloc(5);
+			Function func = new Function(IRFuncType.INDEX);
+			func.regs.add(regId);
+			func.regs.add(it.head.regId);
+			func.regs.add(it.member.regId);
+			curBlock.funcs.add(func);
+
+			it.regId = new Register(regId.id, regId.gr, true);
+		}else{
+			it.regId = it.head.regId;
+		}
 	}
 
 	public Register newMalloc(creatorExprNode it, int i) {
@@ -644,8 +656,8 @@ public class IRBuilder implements ASTVisitor {
 				func.regs.add(new Register(10, 0, false));
 				curBlock.funcs.add(func);
 
-				Scope temp_scope = globalScope.getScopeFromName(it.typeNode.typeName);
-				if (temp_scope.containsFunction(it.typeNode.typeName, false)) {
+				Scope tmp_scope = globalScope.getScopeFromName(it.typeNode.typeName);
+				if (tmp_scope.containsFunction(it.typeNode.typeName, false)) {
 
 					func = new Function(IRFuncType.CALL);
 					func.func = "my_c_" + it.typeNode.typeName + "_" + it.typeNode.typeName;
@@ -658,20 +670,20 @@ public class IRBuilder implements ASTVisitor {
 		}
 		Register iter = curBlock.regAlloca.alloc(1);
 		Register nowRegId = curBlock.regAlloca.alloc(1);
-		Register ttemp = curBlock.regAlloca.alloc(5);
+		Register ttmp = curBlock.regAlloca.alloc(5);
 		Function func = new Function(IRFuncType.MOVE);
 		func.regs.add(iter);
 		func.regs.add(it.exprs.get(i).regId);
 		curBlock.funcs.add(func);
 
 		func = new Function(IRFuncType.MOVE);
-		func.regs.add(ttemp);
+		func.regs.add(ttmp);
 		func.regs.add(it.exprs.get(i).regId);
 		curBlock.funcs.add(func);
 
 		func = new Function(IRFuncType.MOVE);
 		func.regs.add(new Register(10, 0, false));
-		func.regs.add(ttemp);
+		func.regs.add(ttmp);
 		curBlock.funcs.add(func);
 
 		func = new Function(IRFuncType.CALL);
@@ -739,7 +751,44 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(identifierExprNode it) {
-    	
+    	Scope cur = it.scope;
+		while (cur != null){
+			if (cur.containsVariable(it.name, false)){
+				if (it.pRegId != null){
+					it.regId = curBlock.regAlloca.alloc(5);
+					Function func = new Function(IRFuncType.LOAD);
+					func.regs.add(it.regId);
+					func.regs.add(new Register(cur.getVariableID(it.name, false), 8, false));
+					curBlock.funcs.add(func);
+				//	it.inClass = true;
+				} else{
+					if (it.regId.gr == 11){
+						Register tmp = curBlock.regAlloca.alloc(5);
+						Function func = new Function(IRFuncType.LOAD);
+						func.regs.add(tmp);
+						func.regs.add(new Register(it.regId.id, 8, false));
+						curBlock.funcs.add(func);
+
+						Register regId = curBlock.regAlloca.alloc(5);
+						func = new Function(IRFuncType.INDEX);
+						func.regs.add(regId);
+						func.regs.add(new Register(0, 1, false));
+						func.regs.add(tmp);
+						curBlock.funcs.add(func);
+
+						it.regId = new Register(regId.id, regId.gr, true);
+					}
+				}
+				break;
+			}
+			else if (cur.containsFunction(it.name, false)){
+				if (it.pRegId != null){
+					it.regId = it.pRegId;
+				}
+				break;
+			}
+			cur = cur.parentScope;
+		}
     }
 
     @Override

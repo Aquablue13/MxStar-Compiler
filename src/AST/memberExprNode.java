@@ -4,10 +4,10 @@ import Util.position;
 
 public class memberExprNode extends ExprNode {
     public ExprNode head;
-    public String member;
+    public identifierExprNode member;
     public boolean isFunc = false;
 
-    public memberExprNode(position pos, ExprNode head, String member) {
+    public memberExprNode(position pos, ExprNode head, identifierExprNode member) {
         super(pos, true);
         this.head = head;
         this.member = member;

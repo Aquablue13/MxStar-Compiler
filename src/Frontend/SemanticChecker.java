@@ -7,14 +7,15 @@ import Util.Type.*;
 import IR.BasicBlocks;
 
 public class SemanticChecker implements ASTVisitor {
-    public Scope globalScope, localScope;
+    public globalScope globalScope;
+    public Scope localScope;
     public Type returnType;
     public classType curClass;
     public boolean haveReturned;
     public int loopDep = 0;
     private BasicBlocks Blocks;
 
-    public SemanticChecker(BasicBlocks Blocks, Scope global) {
+    public SemanticChecker(BasicBlocks Blocks, globalScope global) {
         this.globalScope = global;
         this.Blocks = Blocks;
         funcType print = new funcType("void");
@@ -61,9 +62,12 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(classDefNode it) {
     	curClass = (classType) globalScope.types.get(it.name);
         localScope = new Scope(localScope);
+        localScope.classInfo = curClass;
+        it.scope = localScope;
         curClass.vars.forEach((key, val) -> it.regId = localScope.defineVariable(key, val, it.pos, 11));
         curClass.funcs.forEach((key, val) -> localScope.defineFunction(key, val, it.pos));
         it.funcs.forEach(unit -> unit.accept(this));
+    //    it.vars.forEach(unit -> unit.accept(this));
         if (it.constructor != null) {
             if (!it.constructor.name.equals(it.name))
             	throw new semanticError("wrong constructor's name", it.pos);
@@ -111,7 +115,6 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(oneVarDefNode it) {
-        it.scope = localScope;
         if (globalScope.getType(it.type).isVoid || globalScope.getType(it.type).isNull)
         	throw new semanticError("the type of variable is void or null", it.pos);
         if (it.expr != null) {
@@ -135,7 +138,9 @@ public class SemanticChecker implements ASTVisitor {
             else
                 x = 1;
         }
+        x = 1;
         localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
+        it.scope = localScope;
     }
 
     @Override
@@ -188,26 +193,35 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(memberExprNode it) {
     	it.head.accept(this);
 
-        if (it.head.type instanceof arrayType && it.isFunc && it.member.equals("size")) {
+        Scope tmp = localScope;
+        if (it.head.type instanceof classType) {
+            localScope = globalScope.getScopeFromName(((classType) it.head.type).name, it.pos);
+        }
+        
+        it.member.accept(this);
+
+        localScope = tmp;
+
+        if (it.head.type instanceof arrayType && it.isFunc && it.member.name.equals("size")) {
             it.type = new funcType("int");
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("length")) {
+        if (it.head.type.isString && it.isFunc && it.member.name.equals("length")) {
             it.type = new funcType("int");
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("substring")) {
+        if (it.head.type.isString && it.isFunc && it.member.name.equals("substring")) {
             funcType type = new funcType("string");
             type.parameters.add(new Type("int"));
             type.parameters.add(new Type("int"));
             it.type = type;
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("parseInt")) {
+        if (it.head.type.isString && it.isFunc && it.member.name.equals("parseInt")) {
             it.type = new funcType("int");;
             return;
         }
-        if (it.head.type.isString && it.isFunc && it.member.equals("ord")) {
+        if (it.head.type.isString && it.isFunc && it.member.name.equals("ord")) {
             funcType type = new funcType("int");
             type.parameters.add(new Type("int"));
             it.type = type;
@@ -219,18 +233,18 @@ public class SemanticChecker implements ASTVisitor {
         classType cur = (classType) it.head.type;
 
         if (it.isFunc) {
-            if (cur.funcs.containsKey(it.member))
-            	it.type = cur.funcs.get(it.member);
+            if (cur.funcs.containsKey(it.member.name))
+            	it.type = cur.funcs.get(it.member.name);
             else
             	throw new semanticError("find no such member", it.pos);
         } else {
-            if (cur.vars.containsKey(it.member))
-            	it.type = cur.vars.get(it.member);
+            if (cur.vars.containsKey(it.member.name))
+            	it.type = cur.vars.get(it.member.name);
             else
             	throw new semanticError("find no such member", it.pos);
         }
         //?
-        it.funcName = it.member;
+        it.funcName = it.member.name;
         it.parent = cur;
     }
 
