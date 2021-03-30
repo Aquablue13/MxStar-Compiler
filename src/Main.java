@@ -25,7 +25,11 @@ public class Main {
 
        InputStream input = System.in;
 
+<<<<<<< HEAD
      /*   File file = new File("test.s");
+=======
+        File file = new File("output.s");
+>>>>>>> 0caac78981c476bb49953309499ca8dc58fcfec8
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);*/
 
