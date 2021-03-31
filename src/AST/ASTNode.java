@@ -8,6 +8,7 @@ abstract public class ASTNode {
     public position pos;
     public Scope scope;
     public Register regId, pRegId;
+    public boolean inClass = false;
 
     public ASTNode(position pos) {
         this.pos = pos;

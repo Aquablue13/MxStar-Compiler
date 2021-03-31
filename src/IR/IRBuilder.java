@@ -626,7 +626,7 @@ public class IRBuilder implements ASTVisitor {
 		it.head.accept(this);
 		it.member.pRegId = it.head.regId;
 		it.member.accept(this);
-		if (it.head.type instanceof classType){
+		if (it.member.inClass){
 			Register regId = curBlock.regAlloca.alloc(5);
 			Function func = new Function(IRFuncType.INDEX);
 			func.regs.add(regId);
@@ -762,7 +762,7 @@ public class IRBuilder implements ASTVisitor {
 					func.regs.add(it.regId);
 					func.regs.add(new Register(cur.getVariableID(it.name, false), 8, false));
 					curBlock.funcs.add(func);
-				//	it.inClass = true;
+					it.inClass = true;
 				} else{
 					if (it.regId.gr == 11){
 						Register tmp = curBlock.regAlloca.alloc(5);

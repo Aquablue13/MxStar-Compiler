@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class globalScope extends Scope {
-    private HashMap<String, Scope> scopes = new HashMap<>();
+    public HashMap<String, Scope> scopes = new HashMap<>();
 
     public globalScope(Scope parentScope) {
         super(parentScope);

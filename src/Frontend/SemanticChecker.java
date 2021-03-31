@@ -12,12 +12,13 @@ public class SemanticChecker implements ASTVisitor {
     public Type returnType;
     public classType curClass;
     public boolean haveReturned, inClass = false;
-    public int loopDep = 0;
+    public int loopDep = 0, inFunc = 0;
     private BasicBlocks Blocks;
 
     public SemanticChecker(BasicBlocks Blocks, globalScope global) {
         this.globalScope = global;
         this.Blocks = Blocks;
+        this.globalScope.regAlloca = new RegIdAllocator();
         funcType print = new funcType("void");
         print.parameters.add(new Type("string"));
         this.globalScope.funcs.put("print", print);
@@ -83,6 +84,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(classDefNode it) {
     	curClass = (classType) globalScope.types.get(it.name);
         localScope = new Scope(localScope);
+        localScope.regAlloca = new RegIdAllocator();
         localScope.classInfo = curClass;
         it.scope = localScope;
         curClass.vars.forEach((key, val) -> it.regId = localScope.defineVariable(key, val, it.pos, 11));
@@ -96,6 +98,7 @@ public class SemanticChecker implements ASTVisitor {
                 throw new semanticError("wrong constructor's type", it.pos);
             it.constructor.accept(this);
         }
+        globalScope.scopes.put(it.name, localScope);
         Blocks.classSizs.put(it.name, localScope.vars.size());
         localScope = localScope.parentScope;
         curClass = null;
@@ -110,16 +113,19 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(funcDefNode it) {
     	haveReturned = false;
+        inFunc++;
     	if (it.type != null)
     		returnType = globalScope.getType(it.type);
         else
         	returnType = new Type("void");
         localScope = new Scope(localScope);
+        localScope.regAlloca = new RegIdAllocator();
         it.scope = localScope;
         localScope.defineVariable("this", curClass, it.pos, 1);
         it.parameters.forEach(unit -> unit.regId = localScope.defineVariable(unit.name, globalScope.getType(unit.type), unit.pos, 1));
         it.block.accept(this);
         localScope = localScope.parentScope;
+        inFunc--;
         if (it.name.equals("main") || haveReturned) {
             if (haveReturned == false)
                 Blocks.haveNoReturn = true;
@@ -155,7 +161,7 @@ public class SemanticChecker implements ASTVisitor {
         if (globalScope == localScope)
             x = 2;
         else {
-            if (curClass != null/* && isClassDef*/)
+            if (curClass != null && inFunc == 0)
                 x = 11;
             else
                 x = 1;
@@ -301,7 +307,6 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(funcExprNode it) {
-        it.scope = localScope;
     	if (it.head instanceof identifierExprNode) 
             it.head.type = localScope.getFunctionType(((identifierExprNode) it.head).name, true);
         else{
@@ -317,7 +322,12 @@ public class SemanticChecker implements ASTVisitor {
             if (!((funcType) it.head.type).parameters.get(i).equal(it.parameters.get(i).type))
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
+        Scope tmp = localScope;
+        if (it.head.parent != null)
+            localScope = globalScope.getScopeFromName(((classType)it.head.parent).name, it.pos);
+        it.scope = localScope;
         it.type = ((funcType)it.head.type).type;
+        localScope = tmp;
     }
 
     @Override
