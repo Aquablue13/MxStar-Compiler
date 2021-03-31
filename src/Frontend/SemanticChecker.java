@@ -323,7 +323,7 @@ public class SemanticChecker implements ASTVisitor {
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
         Scope tmp = localScope;
-        if (it.head.parent != null)
+        if (it.head.parent != null && it.head.parent instanceof classType)
             localScope = globalScope.getScopeFromName(((classType)it.head.parent).name, it.pos);
         it.scope = localScope;
         it.type = ((funcType)it.head.type).type;
