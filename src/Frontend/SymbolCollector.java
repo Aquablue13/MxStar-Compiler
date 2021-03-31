@@ -52,13 +52,20 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(typeNode it) {}
 
     @Override public void visit(oneVarDefNode it) {
-        if (globalScope == localScope)
+        if (globalScope == localScope){
             localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 2);
+         //   System.out.println(it.name + ":2");
+        }
         else
-            if (inClass)
+            if (inClass){
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 11);
-            else
+            //    System.out.println(it.name + ":11");
+            }
+            else {
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 1);
+            //    System.out.println(it.name + ":1");
+            }
+    //    localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos);
     }
 
     @Override public void visit(intExprNode it) {}

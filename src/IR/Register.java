@@ -13,13 +13,16 @@ public class Register{
 	}
 
 	public String name(){
-		String ans = null;
+		String ans = "";
 		if (gr == 6)
 			ans = "*";
 		if (gr == 7)
 			ans = "LP";
-		else
-			ans = ans + nameStr.indexOf(gr - 1);
+		else {
+			if (gr > 0)
+				ans = ans + nameStr.charAt(gr - 1);
+		}
+		ans += id;
 		return ans;
 	}
 

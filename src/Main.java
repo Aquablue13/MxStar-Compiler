@@ -59,14 +59,14 @@ public class Main {
             globalScope global = new globalScope(null);
             new SymbolCollector(global).visit(ASTRoot);
             new TypeCollector(global).visit(ASTRoot);
-            global.vars.clear();
+            //global.vars.clear();
             // new SemanticChecker(global).visit(ASTRoot);
 
             BasicBlocks Blocks = new BasicBlocks();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
             if (!onlySemantic && codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
-                //  Blocks.printIR();
+        //        Blocks.print();
                 Blocks.init();
                 Blocks.printout();
             }

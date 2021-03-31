@@ -70,15 +70,15 @@ public class Scope {
         variablesRegId.put(name, result);
         return result;
     }
-/*
+
     public void defineVariable(String name, Type type, position pos) {
         if (this.containsType(name, true))
             throw new semanticError("duplicated with type name", pos);
         if (vars.containsKey(name))
             throw new semanticError("variable redefine", pos);
         vars.put(name, type);
-        varIDs.put(name, cnt++);
-    }*/
+    //    varIDs.put(name, cnt++);
+    }
 
     public boolean containsVariable(String name, boolean lookUpon) {
         if (vars.containsKey(name))

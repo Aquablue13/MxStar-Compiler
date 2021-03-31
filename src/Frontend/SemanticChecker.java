@@ -11,7 +11,7 @@ public class SemanticChecker implements ASTVisitor {
     public Scope localScope;
     public Type returnType;
     public classType curClass;
-    public boolean haveReturned;
+    public boolean haveReturned, inClass = false;
     public int loopDep = 0;
     private BasicBlocks Blocks;
 
@@ -159,8 +159,11 @@ public class SemanticChecker implements ASTVisitor {
             else
                 x = 1;
         }
-        x = 1;
-        localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
+    //    System.out.println(it.name + ":" + x);
+        if (!localScope.containsVariable(it.name, false)) {
+            localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
+         //   System.out.println("!!!" + it.name + ":" + x);
+        }
         it.scope = localScope;
     }
 
@@ -173,12 +176,26 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(identifierExprNode it) {
     	it.scope = localScope;
-        if (localScope.containsVariable(it.name, true))
-            it.type = localScope.getVariableType(it.name, true);
-        else
-            it.type = localScope.getFunctionType(it.name, true);
-        if (localScope.containsVariable(it.name, true))
-            it.regId = localScope.getRegIdVariable(it.name, true);
+        boolean fl = false;
+        for (Scope cur = localScope; cur != null; cur = cur.parentScope){
+            if (cur.containsVariable(it.name, false)){
+                it.type = cur.getVariableType(it.name, false);
+                it.regId = cur.getRegIdVariable(it.name, false);
+                fl = true;
+                break;
+            }
+            else
+                if (cur.containsFunction(it.name, false)){
+                    it.type = cur.getFunctionType(it.name, false);
+                    it.funcName = it.name;
+                    fl = true;
+                    break;
+                }
+            if (inClass)
+                break;
+        }
+        if (!fl)
+            throw new semanticError("Identifier not found ", it.pos);
     }
 
     @Override
@@ -222,9 +239,11 @@ public class SemanticChecker implements ASTVisitor {
         if (it.head.type instanceof classType) {
             localScope = globalScope.getScopeFromName(((classType) it.head.type).name, it.pos);
         }
-        
+
+        inClass = true;
         it.member.accept(this);
 
+        inClass = false;
         localScope = tmp;
 
         if (it.head.type instanceof arrayType && it.isFunc && it.member.name.equals("size")) {

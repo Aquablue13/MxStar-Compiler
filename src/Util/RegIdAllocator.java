@@ -6,12 +6,12 @@ public class RegIdAllocator {
 
     private int[] nowRegId = new int[20];
 
-    public Register alloc(int typ){
-        return new Register(nowRegId[typ]++, typ, false);
+    public Register alloc(int gr){
+        return new Register(nowRegId[gr]++, gr, false);
     }
 
-    public int size(int typ){
-        return nowRegId[typ];
+    public int size(int gr){
+        return nowRegId[gr];
     }
 
     public RegIdAllocator() {

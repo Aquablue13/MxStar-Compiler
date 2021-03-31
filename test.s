@@ -49,10 +49,10 @@ work:
 	sw	s0,28(sp)
 	sw	ra,24(sp)
 	addi	s0,sp,32
-	sw	a0,-20(s0)
+	sw	a0,-12(s0)
 	mv	a0,a1
-	sw	a0,-24(s0)
-	lw	a0,-24(s0)
+	sw	a0,-16(s0)
+	lw	a0,-16(s0)
 	slli	ra,ra,2
 	add	a0,a0,ra
 	li	a1,100
@@ -63,9 +63,9 @@ work:
 	lui	a0,%hi(.LS0)
 	addi	a0,a0,%lo(.LS0)
 	mv	a1,a0
-	lw	a0,-20(s0)
+	lw	a0,-12(s0)
 	call	my_string_plus
-	lw	a1,-24(s0)
+	lw	a1,-16(s0)
 	slli	zero,zero,2
 	add	a1,a1,zero
 	lw	a1,0(a1)
@@ -79,9 +79,9 @@ work:
 	lui	a0,%hi(.LS2)
 	addi	a0,a0,%lo(.LS2)
 	mv	a1,a0
-	lw	a0,-20(s0)
+	lw	a0,-12(s0)
 	call	my_string_plus
-	lw	a1,-24(s0)
+	lw	a1,-16(s0)
 	slli	zero,zero,2
 	add	a1,a1,zero
 	lw	a1,0(a1)
@@ -91,13 +91,14 @@ work:
 	call	my_string_plus
 	call	println
 .LAB2:
-	lw	a0,-24(s0)
+	lw	a0,-16(s0)
 	slli	ra,ra,2
 	add	a0,a0,ra
 	lw	a0,0(a0)
-	lw	a1,-16(s0)
+	lui	a1,%hi(.G1)
+	lw	a1,%lo(.G1)(a1)
 	add	a0,a0,a1
-	lw	a1,-24(s0)
+	lw	a1,-16(s0)
 	slli	ra,ra,2
 	add	a1,a1,ra
 	sw	a0,0(a1)
@@ -117,48 +118,51 @@ main:
 	sw	ra,24(sp)
 	addi	s0,sp,32
 	li	a0,100
-	sw	a0,-12(s0)
+	lui	a1,%hi(.G0)
+	sw	a0,%lo(.G0)(a1)
 	li	a0,10
-	sw	a0,-16(s0)
+	lui	a1,%hi(.G1)
+	sw	a0,%lo(.G1)(a1)
 	li	a0,8
 	call	malloc
-	sw	a0,-28(s0)
+	sw	a0,-20(s0)
 	lui	a0,%hi(.LS4)
 	addi	a0,a0,%lo(.LS4)
-	lw	a1,-28(s0)
+	lw	a1,-20(s0)
 	slli	zero,zero,2
 	add	a1,a1,zero
 	sw	a0,0(a1)
 	li	a0,0
-	lw	a1,-28(s0)
+	lw	a1,-20(s0)
 	slli	ra,ra,2
 	add	a1,a1,ra
 	sw	a0,0(a1)
 	li	a0,8
 	call	malloc
-	sw	a0,-32(s0)
+	sw	a0,-24(s0)
 	lui	a0,%hi(.LS5)
 	addi	a0,a0,%lo(.LS5)
-	lw	a1,-32(s0)
+	lw	a1,-24(s0)
 	slli	zero,zero,2
 	add	a1,a1,zero
 	sw	a0,0(a1)
-	lw	a0,-32(s0)
+	lw	a0,-24(s0)
 	slli	ra,ra,2
 	add	a0,a0,ra
-	lw	a1,-12(s0)
+	lui	a1,%hi(.G0)
+	lw	a1,%lo(.G0)(a1)
 	sw	a1,0(a0)
 	lui	a0,%hi(.LS6)
 	addi	a0,a0,%lo(.LS6)
-	lw	a1,-28(s0)
+	lw	a1,-20(s0)
 	call	work
 	lui	a0,%hi(.LS7)
 	addi	a0,a0,%lo(.LS7)
-	lw	a1,-32(s0)
+	lw	a1,-24(s0)
 	call	work
 	lui	a0,%hi(.LS8)
 	addi	a0,a0,%lo(.LS8)
-	lw	a1,-32(s0)
+	lw	a1,-24(s0)
 	call	work
 	li	a0,0
 	j	.LAB4
