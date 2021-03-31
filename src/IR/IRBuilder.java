@@ -624,6 +624,8 @@ public class IRBuilder implements ASTVisitor {
 	@Override
     public void visit(memberExprNode it) {
 		it.head.accept(this);
+		it.member.pRegId = it.head.regId;
+		it.member.accept(this);
 		if (it.head.type instanceof classType){
 			Register regId = curBlock.regAlloca.alloc(5);
 			Function func = new Function(IRFuncType.INDEX);
