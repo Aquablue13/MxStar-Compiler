@@ -194,6 +194,11 @@ public class SemanticChecker implements ASTVisitor {
             if (inClass)
                 break;
         }
+        if (!fl && globalScope.containsFunction(it.name, false)) {
+            it.type = globalScope.getFunctionType(it.name, false);
+            it.funcName = it.name;
+            fl = true;
+        }
         if (!fl)
             throw new semanticError("Identifier not found ", it.pos);
     }

@@ -54,16 +54,16 @@ public class SymbolCollector implements ASTVisitor {
     @Override public void visit(oneVarDefNode it) {
         if (globalScope == localScope){
             localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 2);
-         //   System.out.println(it.name + ":2");
+        //    System.out.println(it.name + ":2");
         }
         else
             if (inClass){
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 11);
-            //    System.out.println(it.name + ":11");
+             //   System.out.println(it.name + ":11");
             }
             else {
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 1);
-            //    System.out.println(it.name + ":1");
+             //   System.out.println(it.name + ":1");
             }
     //    localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos);
     }

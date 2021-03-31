@@ -31,7 +31,7 @@ public class Main {
         System.setOut(stream);
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";/*codegen/t14.mx";*/
-     //   String file_name = "D:/MxStar-Compiler/testcases/codegen/t14.mx";
+     //   String file_name = "D:/MxStar-Compiler/testcases/string-1.mx";
      //   InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
