@@ -47,23 +47,23 @@ public class SemanticChecker implements ASTVisitor {
         //string
         funcType length = new funcType("int");
         length.parameters.add(new Type("string"));
-        this.globalScope.funcs.put("length", length);
+        this.globalScope.defineFunction("length", length, new position(), 1);
 
         funcType substring = new funcType("string");
         substring.parameters.add(new Type("int"));
         substring.parameters.add(new Type("int"));
-        this.globalScope.funcs.put("substring", substring);
+        this.globalScope.defineFunction("substring", substring, new position(), 1);
 
         funcType parseInt = new funcType("int");
-        this.globalScope.funcs.put("parseInt", parseInt);
+        this.globalScope.defineFunction("parseInt", parseInt, new position(), 1);
 
         funcType ord = new funcType("int");
         ord.parameters.add(new Type("ord"));
-        this.globalScope.funcs.put("ord", ord);
+        this.globalScope.defineFunction("ord", ord, new position(), 1);
 
         //array
         funcType size = new funcType("int");
-        this.globalScope.funcs.put("size", size);
+        this.globalScope.defineFunction("size", size, new position(), 1);
     }
 
     @Override
@@ -116,6 +116,7 @@ public class SemanticChecker implements ASTVisitor {
         	returnType = new Type("void");
         localScope = new Scope(localScope);
         it.scope = localScope;
+        localScope.defineVariable("this", curClass, it.pos, 1);
         it.parameters.forEach(unit -> unit.regId = localScope.defineVariable(unit.name, globalScope.getType(unit.type), unit.pos, 1));
         it.block.accept(this);
         localScope = localScope.parentScope;
@@ -162,7 +163,7 @@ public class SemanticChecker implements ASTVisitor {
     //    System.out.println(it.name + ":" + x);
         if (!localScope.containsVariable(it.name, false)) {
             localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
-         //   System.out.println("!!!" + it.name + ":" + x);
+        //    System.out.println("!!!" + it.name + ":" + x);
         }
         it.scope = localScope;
     }
@@ -251,6 +252,9 @@ public class SemanticChecker implements ASTVisitor {
         inClass = false;
         localScope = tmp;
 
+        it.funcName = it.member.name;
+        it.parent = it.head.type;
+
         if (it.head.type instanceof arrayType && it.isFunc && it.member.name.equals("size")) {
             it.type = new funcType("int");
             return;
@@ -293,8 +297,6 @@ public class SemanticChecker implements ASTVisitor {
             	throw new semanticError("find no such member", it.pos);
         }
         //?
-        it.funcName = it.member.name;
-        it.parent = cur;
     }
 
     @Override
@@ -302,8 +304,10 @@ public class SemanticChecker implements ASTVisitor {
         it.scope = localScope;
     	if (it.head instanceof identifierExprNode) 
             it.head.type = localScope.getFunctionType(((identifierExprNode) it.head).name, true);
-        else
+        else{
         	it.head.accept(this);
+        //    it.head.regId = localScope.defineVariable(it.head.funcName, globalScope.getType(it.head.type), it.head.pos, 1);
+        }
         if (!(it.head.type instanceof funcType))
         	throw new semanticError("member isn't a function", it.pos);
         it.parameters.forEach(unit -> unit.accept(this));

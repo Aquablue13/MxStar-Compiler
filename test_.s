@@ -1,3 +1,68 @@
+GLOBAL(0) 0
+GLOBAL(1) 0
+GLOBAL(2) 0
+GLOBAL(3) 0
+FUNC main
+	CALL getInt
+	MOVE T0 10
+	MOVE G0 T0
+	LOAD T1 i0
+	MOVE G2 T1
+LABEL(2)
+	LE T2 G2 G0
+	BNEQ(3) T2 0
+	CALL getString
+	MOVE T3 10
+	MOVE G3 T3
+	MOVE P0 G3
+	CALL my_c_string_length
+	MOVE T4 10
+	MOVE G1 T4
+	LOAD T6 i10
+	GE T5 G1 T6
+	BNEQ(6) T5 0
+	LOAD T9 i0
+	LOAD T10 i1
+	MOVE P2 T10
+	MOVE P1 T9
+	MOVE P0 G3
+	CALL my_c_string_substring
+	MOVE T11 10
+	LOAD T13 i2
+	SUB T12 G1 T13
+	MOVE P0 T12
+	CALL toString
+	MOVE T14 10
+	MOVE P1 T14
+	MOVE P0 T11
+	CALL my_string_plus
+	MOVE T8 10
+	LOAD T16 i1
+	SUB T15 G1 T16
+	MOVE P2 G1
+	MOVE P1 T15
+	MOVE P0 G3
+	CALL my_c_string_substring
+	MOVE T17 10
+	MOVE P1 T17
+	MOVE P0 T8
+	CALL my_string_plus
+	MOVE T7 10
+	MOVE P0 T7
+	CALL println
+	MOVE T18 10
+	JUMP(5)
+LABEL(6)
+	MOVE P0 G3
+	CALL println
+	MOVE T19 10
+LABEL(5)
+LABEL(4)
+	ADDI G2 G2 i1
+	JUMP(2)
+LABEL(3)
+	MOVE 10 0
+	JUMP(1)
 	.text
 	.globl	.G0
 	.section	.sbss,"aw",@nobits
@@ -51,7 +116,7 @@ main:
 	sw	a0,%lo(.G3)(a1)
 	lui	a0,%hi(.G3)
 	lw	a0,%lo(.G3)(a0)
-	call	length
+	call	my_c_string_length
 	lui	a1,%hi(.G1)
 	sw	a0,%lo(.G1)(a1)
 	li	a0,10
@@ -65,7 +130,7 @@ main:
 	mv	a1,a0
 	lui	a0,%hi(.G3)
 	lw	a0,%lo(.G3)(a0)
-	call	substring
+	call	my_c_string_substring
 	mv	a6,a0
 	sw	a6,-16(s0)
 	li	a0,2
@@ -89,7 +154,7 @@ main:
 	mv	a1,a0
 	lui	a0,%hi(.G3)
 	lw	a0,%lo(.G3)(a0)
-	call	substring
+	call	my_c_string_substring
 	mv	a1,a0
 	lw	a6,-20(s0)
 	mv	a0,a6

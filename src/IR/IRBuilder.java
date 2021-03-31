@@ -280,9 +280,9 @@ public class IRBuilder implements ASTVisitor {
     public void visit(funcExprNode it) {/*
 		ArrayList<ExprNode> a = new ArrayList<ExprNode>();
 		ExprNode b = a.get(0);*/
+		it.head.accept(this);
 		if (curBlock.paramNum + 1 < it.parameters.size() + 1)
 			curBlock.paramNum = it.parameters.size() - 1 + 1;
-
 		it.parameters.forEach(unit -> unit.accept(this));
 
 		int t = 0;
@@ -295,7 +295,7 @@ public class IRBuilder implements ASTVisitor {
 	//	System.out.println("!!!");
 		t = it.scope.getFunctionInClass(name, true);
 
-		if (it.parameters.size() > 0) {
+		if (it.parameters.size() >= 0) {
 			for (int i = it.parameters.size() - 1; i >= 0; i--) {
 				Function func = new Function(IRFuncType.MOVE);
 				func.regs.add(new Register(i + t, 3, false));
@@ -308,7 +308,7 @@ public class IRBuilder implements ASTVisitor {
 			if (it.head.parent != null) {
 				Function func = new Function(IRFuncType.MOVE);
 				func.regs.add(new Register(0, 3, false));
-				func.regs.add(it.parameters.get(0).regId);
+				func.regs.add(it.head.regId);
 				curBlock.funcs.add(func);
 			}else{
 				Function func = new Function(IRFuncType.MOVE);

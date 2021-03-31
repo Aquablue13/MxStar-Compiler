@@ -29,18 +29,18 @@ public class Function {
 		String name = funcType.toString();
 		if (name.equals("FUNC") || name.equals("LABEL")) {
 			System.out.print(name);
-			if (label > 0){
-				System.out.print("(");
-				System.out.print(label);
-				System.out.print(")");
-			}
-			if (name.equals("FUNC") && func != null)
-				System.out.print(" " + func);
 		}
 		else {
 			System.out.print("\t");
 			System.out.print(name);
 		}
+		if (label > 0){
+			System.out.print("(");
+			System.out.print(label);
+			System.out.print(")");
+		}
+		if (func != null)
+			System.out.print(" " + func);
 		for (Register reg : regs){
 			if (reg != null)
 				System.out.print(" " + reg.name());

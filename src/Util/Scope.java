@@ -134,6 +134,15 @@ public class Scope {
         }
     }
 
+    public void defineFunction(String name, funcType type, position pos, Integer classes) {
+        if (this.containsType(name, true))
+            throw new semanticError("duplicated with type name", pos);
+        if (funcs.containsKey(name))
+            throw new semanticError("function redefine", pos);
+        funcs.put(name, type);
+        funcsInClass.put(name, classes);
+    }
+
     public boolean containsFunction(String name, boolean lookUpon) {
         if (funcs.containsKey(name))
             return true;

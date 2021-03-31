@@ -64,7 +64,7 @@ public class SymbolCollector implements ASTVisitor {
         else
             if (inClass){
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 11);
-             //   System.out.println(it.name + ":11");
+            //    System.out.println(it.name + ":11");
             }
             else {
                 localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 1);
