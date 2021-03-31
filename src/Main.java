@@ -1,6 +1,7 @@
 import AST.RootNode;
 import Frontend.ASTBuilder;
 import Frontend.SemanticChecker;
+import Frontend.SemanticCheckerBef;
 import Frontend.SymbolCollector;
 import Frontend.TypeCollector;
 import IR.BasicBlock;
@@ -25,13 +26,13 @@ public class Main {
 
        InputStream input = System.in;
 
-    //    File file = new File("test.s");
+   //     File file = new File("test.s");
         File file = new File("output.s");
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";/*codegen/t14.mx";*/
-     //   String file_name = "D:/MxStar-Compiler/testcases/string-1.mx";
+     //   String file_name = "D:/MxStar-Compiler/testcases/codegen/e2.mx";
      //   InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
@@ -59,11 +60,17 @@ public class Main {
             globalScope global = new globalScope(null);
             new SymbolCollector(global).visit(ASTRoot);
             new TypeCollector(global).visit(ASTRoot);
-            //global.vars.clear();
-            // new SemanticChecker(global).visit(ASTRoot);
+            global.vars.clear();
 
             BasicBlocks Blocks = new BasicBlocks();
+            new SemanticCheckerBef(Blocks, global).visit(ASTRoot);
+
+            global = new globalScope(null);
+            new SymbolCollector(global).visit(ASTRoot);
+            new TypeCollector(global).visit(ASTRoot);
+            Blocks = new BasicBlocks();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
+
             if (!onlySemantic && codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
         //        Blocks.print();

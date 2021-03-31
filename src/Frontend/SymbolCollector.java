@@ -16,12 +16,14 @@ public class SymbolCollector implements ASTVisitor {
 
 	@Override
 	public void visit(RootNode it) {
-		globalScope.defineType("bool", new Type("bool"), it.pos);
-		globalScope.defineType("int", new Type("int"), it.pos);
-		globalScope.defineType("string", new Type("string"), it.pos);
-		globalScope.defineType("void", new Type("void"), it.pos);
-		globalScope.defineType("null", new Type("null"), it.pos);
-		
+	//    if (!((Scope)globalScope).containsType("bool", false)) {
+            globalScope.defineType("bool", new Type("bool"), it.pos);
+            globalScope.defineType("int", new Type("int"), it.pos);
+            globalScope.defineType("string", new Type("string"), it.pos);
+            globalScope.defineType("void", new Type("void"), it.pos);
+            globalScope.defineType("null", new Type("null"), it.pos);
+    //    }
+
         localScope = globalScope;
 		it.body.forEach(unit -> unit.accept(this));
 	}
@@ -46,12 +48,15 @@ public class SymbolCollector implements ASTVisitor {
     }
 
     @Override public void visit(funcDefNode it) {
-		localScope.defineFunction(it.name, new funcType(it.type.getType().name), it.pos);
+	    if (!localScope.containsFunction(it.name, false))
+		    localScope.defineFunction(it.name, new funcType(it.type.getType().name), it.pos);
     }
 
     @Override public void visit(typeNode it) {}
 
     @Override public void visit(oneVarDefNode it) {
+	  //  if (localScope.containsVariable(it.name, false))
+	  //      return;
         if (globalScope == localScope){
             localScope.defineVariable(it.name, new Type(it.type.getType().name), it.pos, 2);
         //    System.out.println(it.name + ":2");
