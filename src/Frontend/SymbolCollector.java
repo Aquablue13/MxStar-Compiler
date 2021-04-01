@@ -32,11 +32,11 @@ public class SymbolCollector implements ASTVisitor {
 	    inClass = true;
 		localScope = new Scope(localScope);
         classType tmp = new classType(it.name);
+        localScope.classInfo = tmp;
         it.vars.forEach(unit -> unit.accept(this));
         it.funcs.forEach(unit -> unit.accept(this));
         tmp.vars = localScope.vars;
         tmp.funcs = localScope.funcs;
-        localScope.classInfo = tmp;
         globalScope.addType(it.name, localScope, it.pos);
         localScope = localScope.parentScope;
         localScope.defineType(it.name, tmp, it.pos);

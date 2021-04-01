@@ -121,7 +121,7 @@ public class Scope {
     }
 
     public void defineFunction(String name, funcType type, position pos) {
-        if (this.containsFunction(name, true))
+        if (this.containsFunction(name, false))
             throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
@@ -139,7 +139,7 @@ public class Scope {
     }
 
     public void defineFunction(String name, funcType type, position pos, Integer classes) {
-        if (this.containsFunction(name, true))
+        if (this.containsFunction(name, false))
             throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
