@@ -30,7 +30,8 @@ public class Main {
         File file = new File("output.s");
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);
-
+    //
+        
     //    String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";/*codegen/t14.mx";*/
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/shortest_path/dijkstra.mx";
      //   InputStream input = new FileInputStream(file_name);
