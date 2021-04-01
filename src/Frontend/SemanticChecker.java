@@ -19,6 +19,9 @@ public class SemanticChecker implements ASTVisitor {
         this.globalScope = global;
         this.Blocks = Blocks;
         this.globalScope.regAlloca = new RegIdAllocator();
+        Scope stringScope = new Scope(this.globalScope);
+        Scope arrayScope = new Scope(this.globalScope);
+
         funcType print = new funcType("void");
         print.parameters.add(new Type("string"));
         this.globalScope.funcs.put("print", print);
@@ -48,23 +51,28 @@ public class SemanticChecker implements ASTVisitor {
         //string
         funcType length = new funcType("int");
         length.parameters.add(new Type("string"));
-        this.globalScope.defineFunction("length", length, new position(), 1);
+        stringScope.defineFunction("length", length, new position(), 1);
 
         funcType substring = new funcType("string");
         substring.parameters.add(new Type("int"));
         substring.parameters.add(new Type("int"));
-        this.globalScope.defineFunction("substring", substring, new position(), 1);
+        stringScope.defineFunction("substring", substring, new position(), 1);
 
         funcType parseInt = new funcType("int");
-        this.globalScope.defineFunction("parseInt", parseInt, new position(), 1);
+        stringScope.defineFunction("parseInt", parseInt, new position(), 1);
 
         funcType ord = new funcType("int");
         ord.parameters.add(new Type("ord"));
-        this.globalScope.defineFunction("ord", ord, new position(), 1);
+        stringScope.defineFunction("ord", ord, new position(), 1);
+
+        this.globalScope.addType("string", stringScope, new position());
 
         //array
         funcType size = new funcType("int");
-        this.globalScope.defineFunction("size", size, new position(), 1);
+        size.funcName = "size";
+        arrayScope.defineFunction("size", size, new position(), 1);
+    
+        this.globalScope.addType("*array", arrayScope, new position());
     }
 
     @Override
@@ -251,6 +259,14 @@ public class SemanticChecker implements ASTVisitor {
         if (it.head.type instanceof classType) {
             localScope = globalScope.getScopeFromName(((classType) it.head.type).name, it.pos);
         }
+        else
+            if (it.head.type instanceof arrayType) {
+                localScope = globalScope.getScopeFromName("*array", it.pos);
+            }
+            else
+                if (it.head.type.name.equals("string")){
+                    localScope = globalScope.getScopeFromName(it.head.type.name, it.pos);
+                }
 
         inClass = true;
         it.member.accept(this);
@@ -323,8 +339,16 @@ public class SemanticChecker implements ASTVisitor {
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
         Scope tmp = localScope;
-        if (it.head.parent != null && it.head.parent instanceof classType)
-            localScope = globalScope.getScopeFromName(((classType)it.head.parent).name, it.pos);
+        if (it.head.parent != null) {
+            if (it.head.parent instanceof classType)
+                localScope = globalScope.getScopeFromName(((classType) it.head.parent).name, it.pos);
+            else
+                if (it.head.parent instanceof arrayType)
+                    localScope = globalScope.getScopeFromName("*array", it.pos);
+                else
+                    if (it.head.parent.name.equals("string"))
+                        localScope = globalScope.getScopeFromName("string", it.pos);
+        }
         it.scope = localScope;
         it.type = ((funcType)it.head.type).type;
         localScope = tmp;

@@ -3,6 +3,7 @@ package Util.Type;
 import java.util.ArrayList;
 
 public class funcType extends Type {
+    public String funcName;
     public Type type;
     public ArrayList<Type> parameters = new ArrayList<>();
 

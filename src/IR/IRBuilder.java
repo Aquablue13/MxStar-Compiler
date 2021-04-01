@@ -43,10 +43,10 @@ public class IRBuilder implements ASTVisitor {
 	@Override
     public void visit(funcDefNode it) {
     	String funcName;
-    	if (it.scope.classInfo != null)
+    /*	if (it.scope.classInfo != null)
             funcName = it.scope.classInfo.name + "." + it.name;
-        else
-            funcName = it.name;
+        else*/
+        funcName = (it.scope.getFunctionType(it.name, true)).funcName;
 		curBlock = new BasicBlock();
 		curBlock.name = funcName;
 		curBlock.lab = updCntLab();
@@ -318,7 +318,10 @@ public class IRBuilder implements ASTVisitor {
 			}
 		}
 		Function func = new Function(IRFuncType.CALL);
-		func.func = name;
+		if (t == 0)
+			func.func = name;
+		else
+			func.func = (it.scope.getFunctionType(name, true)).funcName;
 		// !!
 		curBlock.funcs.add(func);
 

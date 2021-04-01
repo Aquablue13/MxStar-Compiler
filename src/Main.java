@@ -32,7 +32,7 @@ public class Main {
         System.setOut(stream);
 
      //   String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";/*codegen/t14.mx";*/
-    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/t61.mx";
+    //    String file_name = "D:/MxStar-Compiler/testcases/array-6.mx";
     //    InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
@@ -73,7 +73,7 @@ public class Main {
 
             if (!onlySemantic && codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
-       //         Blocks.print();
+        //        Blocks.print();
                 Blocks.init();
                 Blocks.printout();
             }
