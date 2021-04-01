@@ -89,6 +89,7 @@ public class SemanticChecker implements ASTVisitor {
         it.scope = localScope;
         curClass.vars.forEach((key, val) -> it.regId = localScope.defineVariable(key, val, it.pos, 11));
         curClass.funcs.forEach((key, val) -> localScope.defineFunction(key, val, it.pos));
+        globalScope.scopes.put(it.name, localScope);
         it.funcs.forEach(unit -> unit.accept(this));
     //    it.vars.forEach(unit -> unit.accept(this));
         if (it.constructor != null) {
@@ -98,7 +99,6 @@ public class SemanticChecker implements ASTVisitor {
                 throw new semanticError("wrong constructor's type", it.pos);
             it.constructor.accept(this);
         }
-        globalScope.scopes.put(it.name, localScope);
         Blocks.classSizs.put(it.name, localScope.vars.size());
         localScope = localScope.parentScope;
         curClass = null;
