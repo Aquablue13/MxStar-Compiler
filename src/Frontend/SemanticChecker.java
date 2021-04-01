@@ -117,6 +117,7 @@ public class SemanticChecker implements ASTVisitor {
             if (it.constructor.type != null)
                 throw new semanticError("wrong constructor's type", it.pos);
             it.constructor.accept(this);
+            localScope.defineFunction(it.constructor.name, new funcType("null"), it.pos);
         }
         Blocks.classSizs.put(it.name, localScope.vars.size());
         localScope = localScope.parentScope;

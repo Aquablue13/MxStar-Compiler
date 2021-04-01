@@ -6,16 +6,16 @@ import Util.*;
 import Util.Type.*;
 import IR.BasicBlocks;
 
-public class SemanticCheckerBef implements ASTVisitor {
+public class SemanticCheckerBef_ implements ASTVisitor {
     public globalScope globalScope;
     public Scope localScope;
     public Type returnType;
     public classType curClass;
     public boolean haveReturned, inClass = false;
-    public int loopDep = 0, inFunc = 0;
+    public int loopDep = 0;
     private BasicBlocks Blocks;
 
-    public SemanticCheckerBef(BasicBlocks Blocks, globalScope global) {
+    public SemanticCheckerBef_(BasicBlocks Blocks, globalScope global) {
         this.globalScope = global;
         this.Blocks = Blocks;
         this.globalScope.regAlloca = new RegIdAllocator();
@@ -103,21 +103,18 @@ public class SemanticCheckerBef implements ASTVisitor {
     public void visit(classDefNode it) {
         curClass = (classType) globalScope.types.get(it.name);
         localScope = new Scope(localScope);
-        localScope.regAlloca = new RegIdAllocator();
         localScope.classInfo = curClass;
         it.scope = localScope;
         curClass.vars.forEach((key, val) -> it.regId = localScope.defineVariable(key, val, it.pos, 11));
         curClass.funcs.forEach((key, val) -> localScope.defineFunction(key, val, it.pos));
-        globalScope.scopes.put(it.name, localScope);
         it.funcs.forEach(unit -> unit.accept(this));
-    //    it.vars.forEach(unit -> unit.accept(this));
+        //    it.vars.forEach(unit -> unit.accept(this));
         if (it.constructor != null) {
             if (!it.constructor.name.equals(it.name))
                 throw new semanticError("wrong constructor's name", it.pos);
             if (it.constructor.type != null)
                 throw new semanticError("wrong constructor's type", it.pos);
             it.constructor.accept(this);
-            localScope.defineFunction(it.constructor.name, new funcType("null"), it.pos);
         }
         Blocks.classSizs.put(it.name, localScope.vars.size());
         localScope = localScope.parentScope;
@@ -133,19 +130,15 @@ public class SemanticCheckerBef implements ASTVisitor {
     @Override
     public void visit(funcDefNode it) {
         haveReturned = false;
-        inFunc++;
         if (it.type != null)
             returnType = globalScope.getType(it.type);
         else
             returnType = new Type("void");
         localScope = new Scope(localScope);
-        localScope.regAlloca = new RegIdAllocator();
         it.scope = localScope;
-        localScope.defineVariable("this", curClass, it.pos, 1);
         it.parameters.forEach(unit -> unit.regId = localScope.defineVariable(unit.name, globalScope.getType(unit.type), unit.pos, 1));
         it.block.accept(this);
         localScope = localScope.parentScope;
-        inFunc--;
         if (it.name.equals("main") || haveReturned) {
             if (haveReturned == false)
                 Blocks.haveNoReturn = true;
@@ -181,16 +174,16 @@ public class SemanticCheckerBef implements ASTVisitor {
         if (globalScope == localScope)
             x = 2;
         else {
-            if (curClass != null && inFunc == 0)
+            if (curClass != null/* && isClassDef*/)
                 x = 11;
             else
                 x = 1;
         }
-    //    System.out.println(it.name + ":" + x);
-    //    if (!localScope.containsVariable(it.name, false)) {
-            localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
-        //    System.out.println("!!!" + it.name + ":" + x);
-     //   }
+        //    System.out.println(it.name + ":" + x);
+        //    if (!localScope.containsVariable(it.name, false)) {
+        localScope.defineVariable(it.name, globalScope.getType(it.type), it.pos, x);
+        //   System.out.println("!!!" + it.name + ":" + x);
+        //    }
         it.scope = localScope;
     }
 
@@ -212,12 +205,12 @@ public class SemanticCheckerBef implements ASTVisitor {
                 break;
             }
             else
-                if (cur.containsFunction(it.name, false)){
-                    it.type = cur.getFunctionType(it.name, false);
-                    it.funcName = it.name;
-                    fl = true;
-                    break;
-                }
+            if (cur.containsFunction(it.name, false)){
+                it.type = cur.getFunctionType(it.name, false);
+                it.funcName = it.name;
+                fl = true;
+                break;
+            }
             if (inClass)
                 break;
         }
@@ -235,13 +228,13 @@ public class SemanticCheckerBef implements ASTVisitor {
         it.scope = localScope;
         it.type = new Type("string");
     }
-    
+
     @Override
     public void visit(boolExprNode it) {
         it.scope = localScope;
         it.type = new Type("bool");
     }
-    
+
     @Override
     public void visit(thisExprNode it) {
         if (curClass != null)
@@ -249,16 +242,16 @@ public class SemanticCheckerBef implements ASTVisitor {
         else
             throw new semanticError("No this", it.pos);
     }
-    
+
     @Override
     public void visit(nullExprNode it) {
         it.scope = localScope;
         it.type = new Type("null");
     }
-    
+
     @Override
     public void visit(creatorExprNode it) {
-        if (it.exprs != null) 
+        if (it.exprs != null)
             it.exprs.forEach(unit -> {unit.accept(this); if (!unit.type.isInt) throw new semanticError("not int", unit.pos);});
         it.type = globalScope.getType(it.typeNode);
     }
@@ -271,23 +264,12 @@ public class SemanticCheckerBef implements ASTVisitor {
         if (it.head.type instanceof classType) {
             localScope = globalScope.getScopeFromName(((classType) it.head.type).name, it.pos);
         }
-        else
-            if (it.head.type instanceof arrayType) {
-                localScope = globalScope.getScopeFromName("*array", it.pos);
-            }
-            else
-                if (it.head.type.name.equals("string")){
-                    localScope = globalScope.getScopeFromName(it.head.type.name, it.pos);
-                }
 
         inClass = true;
         it.member.accept(this);
 
         inClass = false;
         localScope = tmp;
-
-        it.funcName = it.member.name;
-        it.parent = it.head.type;
 
         if (it.head.type instanceof arrayType && it.isFunc && it.member.name.equals("size")) {
             it.type = new funcType("int");
@@ -331,16 +313,17 @@ public class SemanticCheckerBef implements ASTVisitor {
                 throw new semanticError("find no such member", it.pos);
         }
         //?
+        it.funcName = it.member.name;
+        it.parent = cur;
     }
 
     @Override
     public void visit(funcExprNode it) {
-        if (it.head instanceof identifierExprNode) 
+        it.scope = localScope;
+        if (it.head instanceof identifierExprNode)
             it.head.type = localScope.getFunctionType(((identifierExprNode) it.head).name, true);
-        else{
+        else
             it.head.accept(this);
-        //    it.head.regId = localScope.defineVariable(it.head.funcName, globalScope.getType(it.head.type), it.head.pos, 1);
-        }
         if (!(it.head.type instanceof funcType))
             throw new semanticError("member isn't a function", it.pos);
         it.parameters.forEach(unit -> unit.accept(this));
@@ -350,20 +333,7 @@ public class SemanticCheckerBef implements ASTVisitor {
             if (!((funcType) it.head.type).parameters.get(i).equal(it.parameters.get(i).type))
                 throw new semanticError("mismatched parameter's type", it.pos);
         }
-        Scope tmp = localScope;
-        if (it.head.parent != null) {
-            if (it.head.parent instanceof classType)
-                localScope = globalScope.getScopeFromName(((classType) it.head.parent).name, it.pos);
-            else
-                if (it.head.parent instanceof arrayType)
-                    localScope = globalScope.getScopeFromName("*array", it.pos);
-                else
-                    if (it.head.parent.name.equals("string"))
-                        localScope = globalScope.getScopeFromName("string", it.pos);
-        }
-        it.scope = localScope;
         it.type = ((funcType)it.head.type).type;
-        localScope = tmp;
     }
 
     @Override
@@ -505,7 +475,7 @@ public class SemanticCheckerBef implements ASTVisitor {
             if (!it.val.type.equal(returnType) && !it.val.type.isNull)
                 throw new semanticError("mismatched return type", it.pos);
             if (it.val.type.isNull && (it.val.type.equal(new Type("int")) || it.val.type.equal(new Type("string"))
-            || it.val.type.equal(new Type("bool")) || it.val.type.equal(new Type("void"))))
+                    || it.val.type.equal(new Type("bool")) || it.val.type.equal(new Type("void"))))
                 throw new semanticError("mismatched return type with null", it.pos);
         }
     }

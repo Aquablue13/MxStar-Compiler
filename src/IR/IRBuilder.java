@@ -665,7 +665,7 @@ public class IRBuilder implements ASTVisitor {
 				if (tmp_scope.containsFunction(it.typeNode.typeName, false)) {
 
 					func = new Function(IRFuncType.CALL);
-					func.func = "my_c_" + it.typeNode.typeName + "_" + it.typeNode.typeName;
+					func.func = it.typeNode.typeName + "." + it.typeNode.typeName;
 					curBlock.funcs.add(func);
 				};
 				return nowRegId;

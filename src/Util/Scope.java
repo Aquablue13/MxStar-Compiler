@@ -121,23 +121,25 @@ public class Scope {
     }
 
     public void defineFunction(String name, funcType type, position pos) {
-        if (this.containsType(name, true))
+        if (this.containsFunction(name, true))
             throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
         if (classInfo == null) {
             funcsInClass.put(name, 0);
-            type.funcName = name;
+            if (type != null)
+                type.funcName = name;
         }
         else {
             funcsInClass.put(name, 1);
-            type.funcName = classInfo.name + "." + name;
+            if (type != null)
+                type.funcName = classInfo.name + "." + name;
         }
         funcs.put(name, type);
     }
 
     public void defineFunction(String name, funcType type, position pos, Integer classes) {
-        if (this.containsType(name, true))
+        if (this.containsFunction(name, true))
             throw new semanticError("duplicated with type name", pos);
         if (funcs.containsKey(name))
             throw new semanticError("function redefine", pos);
