@@ -24,45 +24,56 @@ public class SemanticChecker implements ASTVisitor {
 
         funcType print = new funcType("void");
         print.parameters.add(new Type("string"));
+        print.funcName = "print";
         this.globalScope.funcs.put("print", print);
 
         funcType println = new funcType("void");
         println.parameters.add(new Type("string"));
+        println.funcName = "println";
         this.globalScope.funcs.put("println", println);
 
         funcType printInt = new funcType("void");
         printInt.parameters.add(new Type("int"));
+        printInt.funcName = "printInt";
         this.globalScope.funcs.put("printInt", printInt);
        		
         funcType printlnInt = new funcType("void");
         printlnInt.parameters.add(new Type("int"));
+        printlnInt.funcName = "printlnInt";
         this.globalScope.funcs.put("printlnInt", printlnInt);
 
         funcType getString = new funcType("string");
+        getString.funcName = "getString";
         this.globalScope.funcs.put("getString", getString);
 
         funcType getInt = new funcType("int");
+        getInt.funcName = "getInt";
         this.globalScope.funcs.put("getInt", getInt);
 
         funcType toString = new funcType("string");
         toString.parameters.add(new Type("int"));
+        toString.funcName = "toString";
         this.globalScope.funcs.put("toString", toString);
 
         //string
         funcType length = new funcType("int");
         length.parameters.add(new Type("string"));
+        length.funcName = "length";
         stringScope.defineFunction("length", length, new position(), 1);
 
         funcType substring = new funcType("string");
         substring.parameters.add(new Type("int"));
         substring.parameters.add(new Type("int"));
+        substring.funcName = "substring";
         stringScope.defineFunction("substring", substring, new position(), 1);
 
         funcType parseInt = new funcType("int");
+        parseInt.funcName = "parseInt";
         stringScope.defineFunction("parseInt", parseInt, new position(), 1);
 
         funcType ord = new funcType("int");
         ord.parameters.add(new Type("ord"));
+        ord.funcName = "ord";
         stringScope.defineFunction("ord", ord, new position(), 1);
 
         this.globalScope.addType("string", stringScope, new position());
