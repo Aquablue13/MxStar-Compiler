@@ -4,9 +4,9 @@ import Frontend.SemanticChecker;
 import Frontend.SemanticCheckerBef;
 import Frontend.SymbolCollector;
 import Frontend.TypeCollector;
-import IR.BasicBlock;
-import IR.BasicBlocks;
-import IR.IRBuilder;
+import IR.*;
+import Backend.*;
+import ASM.*;
 import Parser.MxStarLexer;
 import Parser.MxStarParser;
 import Util.MxErrorListener;
@@ -24,17 +24,19 @@ import java.io.PrintStream;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-       InputStream input = System.in;
+    //   InputStream input = System.in;
 
-    //    File file = new File("test.s");
-        File file = new File("output.s");
+        File file = new File("test.s");
+    //    File file = new File("output.s");
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);
-    //
-        
+
     //    String file_name = "D:/MxStar-Compiler/testcases/sema/function-package/function-4.mx";/*codegen/t14.mx";*/
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/shortest_path/dijkstra.mx";
-     //   InputStream input = new FileInputStream(file_name);
+    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/std/queue.mt";
+    //    String file_name = "D:/MxStar-Compiler/tmp/a.mx";
+        String file_name = "D:/MxStar-Compiler/testcases/codegen/e8.mx";
+        InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
             switch (arg) {
@@ -63,20 +65,21 @@ public class Main {
             new TypeCollector(global).visit(ASTRoot);
             global.vars.clear();
 
-            BasicBlocks Blocks = new BasicBlocks();
+            IR Blocks = new IR();
             new SemanticCheckerBef(Blocks, global).visit(ASTRoot);
 
             global = new globalScope(null);
             new SymbolCollector(global).visit(ASTRoot);
             new TypeCollector(global).visit(ASTRoot);
-            Blocks = new BasicBlocks();
+            Blocks = new IR();
             new SemanticChecker(Blocks, global).visit(ASTRoot);
 
             if (!onlySemantic && codegen) {
                 new IRBuilder(Blocks, global).visit(ASTRoot);
        //         Blocks.print();
-                Blocks.init();
-                Blocks.printout();
+                ASM asm = new ASM(Blocks);
+                asm.trans();
+                new InstSelector().run(asm);
             }
         } catch (Error er) {
             System.err.println(er.toString());

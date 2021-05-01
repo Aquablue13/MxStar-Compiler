@@ -1,15 +1,28 @@
-package IR;
+package IR.Operand;
 
 public class Register{
 	String nameStr = "LGPFTTLiSQC";
-	public int id, gr;
+	public int id, gr, val;
+	public boolean pointer, mult = false, cst = false;
 	public Integer useId = null;
-	public boolean pointer;
 	
 	public Register(int id, int gr, boolean pointer){
 		this.id = id;
 		this.gr = (pointer ? 6 : gr);
 		this.pointer = pointer;
+	}
+
+	public void assign(Register other){
+		id = other.id;
+		gr = other.gr;
+		mult = other.mult;
+	}
+	public void cst_agn(Register other){
+		cst = other.cst;
+		val = other.val;
+	}
+	public boolean equals(Register other){
+		return id == other.id && gr == other.gr;
 	}
 
 	public String name(){
@@ -18,10 +31,13 @@ public class Register{
 			ans = "*";
 		if (gr == 7)
 			ans = "LP";
-		else {
-			if (gr > 0)
-				ans = ans + nameStr.charAt(gr - 1);
-		}
+		else
+			if (gr == 12)
+				ans = "SP";
+			else {
+				if (gr > 0)
+					ans = ans + nameStr.charAt(gr - 1);
+			}
 		ans += id;
 		return ans;
 	}

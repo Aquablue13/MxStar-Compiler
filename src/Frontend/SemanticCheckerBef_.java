@@ -4,7 +4,7 @@ import AST.*;
 import Util.Error.semanticError;
 import Util.*;
 import Util.Type.*;
-import IR.BasicBlocks;
+import IR.*;
 
 public class SemanticCheckerBef_ implements ASTVisitor {
     public globalScope globalScope;
@@ -13,9 +13,9 @@ public class SemanticCheckerBef_ implements ASTVisitor {
     public classType curClass;
     public boolean haveReturned, inClass = false;
     public int loopDep = 0;
-    private BasicBlocks Blocks;
+    private IR Blocks;
 
-    public SemanticCheckerBef_(BasicBlocks Blocks, globalScope global) {
+    public SemanticCheckerBef_(IR Blocks, globalScope global) {
         this.globalScope = global;
         this.Blocks = Blocks;
         this.globalScope.regAlloca = new RegIdAllocator();

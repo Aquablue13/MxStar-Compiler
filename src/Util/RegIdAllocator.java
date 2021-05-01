@@ -1,6 +1,6 @@
 package Util;
 
-import IR.Register;
+import IR.Operand.Register;
 
 public class RegIdAllocator {
 

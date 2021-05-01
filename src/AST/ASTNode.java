@@ -2,7 +2,7 @@ package AST;
 
 import Util.position;
 import Util.Scope;
-import IR.Register;
+import IR.Operand.Register;
 
 abstract public class ASTNode {
     public position pos;
