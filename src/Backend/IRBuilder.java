@@ -56,11 +56,8 @@ public class IRBuilder implements ASTVisitor {
 		curBlock = new BasicBlock();
 		curBlock.name = funcName;
 		curBlock.lab = updCntLab();
-<<<<<<< HEAD
 		curBlock.id = Blocks.blocks.size();
-=======
-		curBlock.id = Blocks.blocks.size() - 1;
->>>>>>> ad5f96bf466666b9b470dd68c17e3ea03caea734
+		curBlock.id = Blocks.blocks.size();
 		curBlock.regAlloca = it.scope.regAlloca;
 		Blocks.blocks.add(curBlock);
 		IRInst inst = new FuncInst(funcName);
