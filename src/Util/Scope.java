@@ -5,7 +5,7 @@ import Util.Error.semanticError;
 import Util.Error.internalError;
 import Util.position;
 import Util.RegIdAllocator;
-import IR.Register;
+import IR.Operand.Register;
 import AST.*;
 
 import java.util.HashMap;
