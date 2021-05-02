@@ -14,7 +14,7 @@ public class ASM {
 	}
 
 	public void trans(){
-		ir.getDAG();
+	//	ir.getDAG();
 		ir.blocks.forEach(b -> {
 			b.init();
 			new AddImm(b).work();
