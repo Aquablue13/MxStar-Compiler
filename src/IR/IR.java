@@ -67,29 +67,31 @@ public class IR {
     public void getDAG() {
         pre();
         ArrayList<BasicBlock> curBlocks = new ArrayList<>();
+        int [] q = new int[n];
+        int cnt = 0;
         for (int i = 0; i < n; i++) {
             BasicBlock curBlock = blocks.get(i);
             for (IRInst inst : curBlock.insts)
                 if (inst instanceof CallInst) {
                     if (Id.containsKey(inst.funcName)) {
                         int v = Id.get(inst.funcName);
-                    //    inst.block = blocks.get(v);
+                        inst.block = blocks.get(v);
                         addEdge(i, v);
                     }
                 }
             if (d[i] == 0){
                 vis[i] = true;
-                q.add(i);
+                q[cnt++] = i;
                 curBlocks.add(blocks.get(i));
             }
         }
-        while (!q.isEmpty()) {
-            int t = q.poll();
-            for (int pt : rto.get(t)) {
-                d[pt]--;
-                if (!vis[pt] && d[pt] == 0) {
+        for (int i = 0; i < cnt; i++) {
+            int t = q[i];
+            for (int j = 0; j < rto.get(i).size(); j++) {
+                int pt = rto.get(i).get(j);
+                if (--d[pt] == 0) {
+                    q[cnt++] = pt;
                     vis[pt] = true;
-                    q.add(pt);
                     curBlocks.add(blocks.get(pt));
                 }
             }

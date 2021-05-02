@@ -307,7 +307,7 @@ public class BasicBlock {
 					inst.block.insts.size() <= 200 && inst.block.containsCALL == false &&
 					inst.block != this){
 					Register[] t_id = new Register [inst.block.regAlloca.size(5)];
-					Integer[] l_id = new Integer [inst.block.cntLab];
+					Integer[] l_id = new Integer [inst.block.cntLab + 1];
 					int j = 1, paramid = 0;
 					for (;paramid < lParam.size(); paramid++){
 						IRInst param_line = inst.block.insts.get(j);
@@ -327,9 +327,121 @@ public class BasicBlock {
 					call_result = regAlloca.alloc(5);
 					for (;j < inst.block.insts.size(); j++){
 						IRInst befInst = inst.block.insts.get(j);
-						IRInst updInst = befInst;
+						IRInst updInst = new FuncInst();
+						switch (befInst.op()) {
+							case "add":
+								updInst = new ArithInst(ArithInst.ArithOp.add);
+								break;
+							case "sub":
+								updInst = new ArithInst(ArithInst.ArithOp.sub);
+								break;
+							case "mul":
+								updInst = new ArithInst(ArithInst.ArithOp.mul);
+								break;
+							case "div":
+								updInst = new ArithInst(ArithInst.ArithOp.div);
+								break;
+							case "rem":
+								updInst = new ArithInst(ArithInst.ArithOp.rem);
+								break;
+							case "addi":
+								updInst = new ArithInst(ArithInst.ArithOp.addi);
+								break;
+							case "muli":
+								updInst = new ArithInst(ArithInst.ArithOp.muli);
+								break;
+							case "and":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.and);
+								break;
+							case "or":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.or);
+								break;
+							case "xor":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.xor);
+								break;
+							case "shl":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.shl);
+								break;
+							case "shr":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.shr);
+								break;
+							case "andi":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.andi);
+								break;
+							case "not":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.not);
+								break;
+							case "neg":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.neg);
+								break;
+							case "lnot":
+								updInst = new BitwiseInst(BitwiseInst.BitwiseOp.lnot);
+								break;
+							case "load":
+								updInst = new LoadInst(LoadInst.LoadOp.load);
+								break;
+							case "loadstr":
+								updInst = new LoadInst(LoadInst.LoadOp.loadstr);
+								break;
+							case "lw":
+								updInst = new LoadInst(LoadInst.LoadOp.lw);
+								break;
+							case "jump":
+								updInst = new BranchInst(BranchInst.BranchOp.jump);
+								break;
+							case "beq":
+								updInst = new BranchInst(BranchInst.BranchOp.beq);
+								break;
+							case "bneq":
+								updInst = new BranchInst(BranchInst.BranchOp.bneq);
+								break;
+							case "seq":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.seq);
+								break;
+							case "sne":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.sne);
+								break;
+							case "sgt":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.sgt);
+								break;
+							case "sge":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.sge);
+								break;
+							case "slt":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.slt);
+								break;
+							case "sle":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.sle);
+								break;
+							case "seqi":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.seqi);
+								break;
+							case "slti":
+								updInst = new IcmpInst(IcmpInst.IcmpOp.slti);
+								break;
+							case "func":
+								updInst = new FuncInst();
+								break;
+							case "call":
+								updInst = new CallInst();
+								break;
+							case "store":
+								updInst = new StoreInst();
+								break;
+							case "move":
+								updInst = new MoveInst();
+								break;
+							case "index":
+								updInst = new IndexInst();
+								break;
+							case "label":
+								updInst = new LabelInst();
+								break;
+						}
 						updInst.regs = new ArrayList<>();
-						if (befInst instanceof FuncInst);
+						if (befInst instanceof FuncInst){
+							int bbb = 1;
+						}
 						else{
 							if (befInst instanceof BranchInst || befInst instanceof LabelInst){
 									if (l_id[befInst.label] == null){

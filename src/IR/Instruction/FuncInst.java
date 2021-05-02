@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class FuncInst extends IRInst {
 
+    public FuncInst() {}
+
     public FuncInst(String name) {
         this.funcName = name;
     }

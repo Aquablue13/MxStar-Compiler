@@ -11,7 +11,7 @@ import java.util.HashSet;
 abstract public class IRInst {
 //	public String instName = null;
 	public String funcName = null;
-	public BasicBlock block = null;
+	public BasicBlock block = null, pBlock;
 	public ArrayList<Register> regs = new ArrayList<>();
 	public int label = 0, add_up = 0;
 	public boolean expanded = false, calling = false, ignored = false;

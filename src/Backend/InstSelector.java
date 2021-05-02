@@ -29,7 +29,7 @@ public class InstSelector implements IRVisitor{
 	@Override
 	public void visit(BasicBlock it) {
 		it.prePrint();
-		it.insts.forEach(unit -> unit.block = it);
+		it.insts.forEach(unit -> unit.pBlock = it);
 		it.insts.forEach(unit -> unit.accept(this));
 		it.endPrint();
 	}
@@ -161,19 +161,19 @@ public class InstSelector implements IRVisitor{
 	public void visit(BranchInst it) {
 		switch (it.op) {
 			case jump:
-				System.out.println("\tj\t" + ".b" + it.block.id + "l" + it.label);
+				System.out.println("\tj\t" + ".b" + it.pBlock.id + "l" + it.label);
 				break;
 			case beq:
 				System.out.print("\tbne\t");
 				System.out.print(it.regs.get(0).toASM() + ",");
 				System.out.print(it.regs.get(1).toASM() + ",");
-				System.out.println(".b" + it.block.id + "l" + it.label);
+				System.out.println(".b" + it.pBlock.id + "l" + it.label);
 				break;
 			case bneq:
 				System.out.print("\tbeq\t");
 				System.out.print(it.regs.get(0).toASM() + ",");
 				System.out.print(it.regs.get(1).toASM() + ",");
-				System.out.println(".b" + it.block.id + "l" + it.label);
+				System.out.println(".b" + it.pBlock.id + "l" + it.label);
 				break;
 		}
 	}
@@ -295,7 +295,7 @@ public class InstSelector implements IRVisitor{
 
 	@Override
 	public void visit(LabelInst it) {
-		System.out.println(".b" + it.block.id + "l" + it.label + ":");
+		System.out.println(".b" + it.pBlock.id + "l" + it.label + ":");
 	}
 
 	@Override
@@ -334,7 +334,7 @@ public class InstSelector implements IRVisitor{
 						System.out.println("(" + it.regs.get(1).toASM() + ")");
 						break;
 					case 12:
-						System.out.print(it.block.addrLocal(it.regs.get(1).id) + it.block.realRAM);
+						System.out.print(it.pBlock.addrLocal(it.regs.get(1).id) + it.pBlock.realRAM);
 						System.out.println("(sp)");
 						break;
 					case 2:
@@ -342,7 +342,7 @@ public class InstSelector implements IRVisitor{
 						System.out.println("(" + it.regs.get(2).toASM() + ")");
 						break;
 					case 4:
-						System.out.print(it.block.addrParam(it.regs.get(1).id) + it.block.realRAM);
+						System.out.print(it.pBlock.addrParam(it.regs.get(1).id) + it.pBlock.realRAM);
 						System.out.println("(sp)");
 						break;
 				}
@@ -360,7 +360,7 @@ public class InstSelector implements IRVisitor{
 				System.out.println("(" + it.regs.get(1).toASM() + ")");
 				break;
 			case 12:
-				System.out.print(it.block.addrLocal(it.regs.get(1).id) + it.block.realRAM);
+				System.out.print(it.pBlock.addrLocal(it.regs.get(1).id) + it.pBlock.realRAM);
 				System.out.println("(sp)");
 				break;
 			case 2:
@@ -368,11 +368,11 @@ public class InstSelector implements IRVisitor{
 				System.out.println("(" + it.regs.get(2).toASM() + ")");
 				break;
 			case 4:
-				System.out.print(it.block.addrParam(it.regs.get(1).id) + it.block.realRAM);
+				System.out.print(it.pBlock.addrParam(it.regs.get(1).id) + it.pBlock.realRAM);
 				System.out.println("(sp)");
 				break;
 			case 7:
-				System.out.print(it.block.addrParam(it.regs.get(1).id));
+				System.out.print(it.pBlock.addrParam(it.regs.get(1).id));
 				System.out.println("(sp)");
 				break;
 		}

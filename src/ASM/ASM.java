@@ -19,10 +19,12 @@ public class ASM {
 			b.init();
 			new AddImm(b).work();
 			new MergeImm(b).work();
-		});
-		ir.blocks.forEach(b -> {
+			new FunctionInline(b).work();
 			new SSAConstruction(b).work();
 			b.exp();
+		});
+		ir.blocks.forEach(b -> {
+
 		});
 		ir.blocks.forEach(b -> new ADCE(b).work());
 		ir.blocks.forEach(b -> new LICM(b).work());

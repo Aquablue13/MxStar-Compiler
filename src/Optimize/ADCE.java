@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ADCE {
     public BasicBlock curBlock;
-    public int n;
+    public int n, m;
     public Queue<Integer> q;
     public boolean[] isLive;
     public ArrayList<ArrayList<Integer>> p;
@@ -19,6 +19,7 @@ public class ADCE {
     public ADCE(BasicBlock block) {
         curBlock = block;
         n = curBlock.regAlloca.size(5);
+        m = curBlock.insts.size();
         q = new LinkedList<Integer>();
         isLive = new boolean[n];
         for (int i = 0; i < n; i++)
@@ -73,7 +74,7 @@ public class ADCE {
 		ArrayList<IRInst> curInsts = new ArrayList<>();
 		for (int i = 0; i < curBlock.insts.size(); i++) {
 			IRInst tInst = curBlock.insts.get(i);
-			if (tInst.defs().isEmpty() || isLive[tInst.regs.get(0).id] || tInst.regs.get(0).gr != 5)
+			if (tInst.defs().isEmpty() || tInst.regs.get(0).gr != 5 || isLive[tInst.regs.get(0).id])
 				curInsts.add(tInst);
 		}
 		curBlock.insts = curInsts;
