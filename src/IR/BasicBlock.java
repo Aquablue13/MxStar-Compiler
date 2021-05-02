@@ -13,7 +13,7 @@ public class BasicBlock {
 	public String name;
     public ArrayList<IRInst> insts = new ArrayList<>();
     public boolean containsCALL = false;
-    public int paramNum = 0, lab = 0, loc = 0;
+    public int paramNum = 0, lab = 0;
     public int regNum = 0, cntLab = 0, id, spillNum = 0;
     public int totRAM, realRAM, locHead;
     public RegIdAllocator regAlloca = null;
@@ -136,54 +136,6 @@ public class BasicBlock {
 				}
 		}
 		insts = curInsts;
-		loc = regAlloca.size(1);
-	}
-
-	public void expandLocal() {
-		ArrayList<IRInst> curInsts = new ArrayList<>();
-		for (int i = 0; i < insts.size(); i++) {
-			IRInst tInst = insts.get(i);
-			int j;
-			for (RegisterForSet treg : tInst.uses()) {
-				Register regId = treg.reg;
-				j = treg.pos;
-				IRInst inst;
-				Register tmp;
-				switch (regId.gr) {
-					case 1:
-						if (regId.id < loc)
-							break;
-						tmp = regAlloca.alloc(5);
-						inst = new LoadInst(LoadOp.lw);
-						inst.regs.add(tmp);
-						inst.regs.add(regId);
-						curInsts.add(inst);
-						tInst.regs.set(j, tmp);
-						break;
-				}
-			}
-			curInsts.add(tInst);
-			/*!(tInst instanceof StoreInst || tInst instanceof BranchInst || tInst instanceof FuncInst ||
-				  tInst instanceof LabelInst || tInst instanceof CallInst)*/
-			if (!tInst.defs().isEmpty()) {
-				Register regId = tInst.regs.get(0);
-				IRInst inst;
-				Register tmp;
-				if (regId != null)
-				switch (regId.gr) {
-					case 1:
-						if (regId.id < loc) break;
-						tmp = regAlloca.alloc(5);
-						inst = new StoreInst();
-						inst.regs.add(tmp);
-						inst.regs.add(regId);
-						curInsts.add(inst);
-						tInst.regs.set(0, tmp);
-						break;
-				}
-			}
-		}
-		insts = curInsts;
 	}
 
 	public int[] free_reg = new int [32];
@@ -248,41 +200,29 @@ public class BasicBlock {
 			int j;
 			for (RegisterForSet treg : tInst.uses()) {
 				Register regId = treg.reg;
+				if (regId.gr != 12)
+					continue;
 				j = treg.pos;
-				IRInst inst;
-				Register tmp;
-				switch (regId.gr) {
-					case 1:
-						if (regId.id < loc)
-							break;
-						tmp = regAlloca.alloc(5);
-						inst = new LoadInst(LoadOp.lw);
-						inst.regs.add(tmp);
-						inst.regs.add(regId);
-						curInsts.add(inst);
-						tInst.regs.set(j, tmp);
-						break;
-				}
+				Register tmp = regAlloca.alloc(5);
+				IRInst inst = new LoadInst(LoadOp.lw);
+				inst.regs.add(tmp);
+				inst.regs.add(regId);
+				curInsts.add(inst);
+				tInst.regs.set(j, tmp);
 			}
 			curInsts.add(tInst);
 			/*!(tInst instanceof StoreInst || tInst instanceof BranchInst || tInst instanceof FuncInst ||
 				  tInst instanceof LabelInst || tInst instanceof CallInst)*/
 			if (!tInst.defs().isEmpty()) {
 				Register regId = tInst.regs.get(0);
-				IRInst inst;
-				Register tmp;
-				if (regId != null)
-				switch (regId.gr) {
-					case 1:
-						if (regId.id < loc) break;
-						tmp = regAlloca.alloc(5);
-						inst = new StoreInst();
-						inst.regs.add(tmp);
-						inst.regs.add(regId);
-						curInsts.add(inst);
-						tInst.regs.set(0, tmp);
-						break;
-				}
+				if (regId.gr != 12)
+					continue;
+				IRInst inst = new StoreInst();
+				Register tmp = regAlloca.alloc(5);
+				inst.regs.add(tmp);
+				inst.regs.add(regId);
+				curInsts.add(inst);
+				tInst.regs.set(0, tmp);
 			}
 		}
 		insts = curInsts;
