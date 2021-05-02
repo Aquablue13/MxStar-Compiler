@@ -14,6 +14,7 @@ public class ASM {
 	}
 
 	public void trans(){
+		ir.getDAG();
 		ir.blocks.forEach(b -> {
 			b.init();
 			new SSAConstruction(b).work();
