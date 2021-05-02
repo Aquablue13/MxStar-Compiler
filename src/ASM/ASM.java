@@ -2,6 +2,7 @@ package ASM;
 
 import Optimize.*;
 import IR.*;
+import IR.Instruction.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +15,12 @@ public class ASM {
 	}
 
 	public void trans(){
-	//	ir.getDAG();
+		ir.blocks.forEach(b -> {for (IRInst inst : b.insts) inst.block = b;});
 		ir.blocks.forEach(b -> {
-			b.init();
+			b.init();/*
 			new AddImm(b).work();
 			new MergeImm(b).work();
-			new FunctionInline(b).work();
+			new FunctionInline(b).work();*/
 			new SSAConstruction(b).work();
 			b.exp();
 		});
