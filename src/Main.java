@@ -26,8 +26,8 @@ public class Main {
 
        InputStream input = System.in;
 
-        File file = new File("test.s");
-    //    File file = new File("output.s");
+     //   File file = new File("test.s");
+        File file = new File("output.s");
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);
 
