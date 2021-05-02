@@ -20,6 +20,7 @@ public class ASM {
 			b.exp();
 		});
 		ir.blocks.forEach(b -> new ADCE(b).work());
+		ir.blocks.forEach(b -> new LICM(b).work());
 		ir.blocks.forEach(b -> new GraphColoringRegAllocator(b).main());
 		ir.blocks.forEach(b -> b.dowloc());
 	}

@@ -16,6 +16,10 @@ public class Register{
 		return (gr == 5 || gr == 0 || gr == 2 || gr == 7);
 	}
 
+	public boolean spec() {
+		return (gr == 5);
+	}
+
 	public void assign(Register other){
 		id = other.id;
 		gr = other.gr;

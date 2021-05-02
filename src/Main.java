@@ -26,8 +26,8 @@ public class Main {
 
        InputStream input = System.in;
 
-    //    File file = new File("test.s");
-        File file = new File("output.s");
+        File file = new File("test.s");
+    //    File file = new File("output.s");
         PrintStream stream = new PrintStream(file);
         System.setOut(stream);
 
@@ -35,9 +35,9 @@ public class Main {
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/shortest_path/dijkstra.mx";
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/std/queue.mt";
     //    String file_name = "D:/MxStar-Compiler/tmp/a.mx";
-    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/t55.mx";
-    //    String file_name = "D:/git__/Compiler-2021-testcases/optim-new/const.mx";
-     //   InputStream input = new FileInputStream(file_name);
+    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/t1.mx";
+    //    String file_name = "D:/git__/Compiler-2021-testcases/optim-new/loop-adv.mx";
+      //  InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;
         for (String arg : args) {
             switch (arg) {
