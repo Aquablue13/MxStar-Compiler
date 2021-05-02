@@ -99,7 +99,7 @@ main:
 .b1l3:
 	lw	t5,8(sp)
 	lw	t6,8(sp)
-	mul	a0,t5,t6
+	mul	a0,t6,t5
 	call	my_array_alloc
 	mv	s1,a0
 	li	a0,0
@@ -107,7 +107,7 @@ main:
 .b1l5:
 	lw	t5,8(sp)
 	lw	t6,8(sp)
-	mul	a0,t5,t6
+	mul	a0,t6,t5
 	slt	a0,a1,a0
 	beq	a0,zero,.b1l6
 	li	a3,0

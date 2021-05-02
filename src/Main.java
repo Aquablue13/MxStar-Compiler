@@ -35,7 +35,7 @@ public class Main {
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/shortest_path/dijkstra.mx";
     //    String file_name = "D:/MxStar-Compiler/testcases/codegen/std/queue.mt";
     //    String file_name = "D:/MxStar-Compiler/tmp/a.mx";
-     //   String file_name = "D:/MxStar-Compiler/testcases/codegen/t1.mx";
+    //    String file_name = "D:/MxStar-Compiler/testcases/codegen/t1.mx";
     //    String file_name = "D:/git__/Compiler-2021-testcases/optim-new/loop-adv.mx";
     //    InputStream input = new FileInputStream(file_name);
         boolean onlySemantic = false, codegen = true;

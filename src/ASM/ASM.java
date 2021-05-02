@@ -18,6 +18,7 @@ public class ASM {
 		ir.blocks.forEach(b -> {
 			b.init();
 			new AddImm(b).work();
+			new MergeImm(b).work();
 		});
 		ir.blocks.forEach(b -> {
 			new SSAConstruction(b).work();
