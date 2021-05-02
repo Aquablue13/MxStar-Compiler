@@ -17,6 +17,9 @@ public class ASM {
 		ir.getDAG();
 		ir.blocks.forEach(b -> {
 			b.init();
+			new AddImm(b).work();
+		});
+		ir.blocks.forEach(b -> {
 			new SSAConstruction(b).work();
 			b.exp();
 		});

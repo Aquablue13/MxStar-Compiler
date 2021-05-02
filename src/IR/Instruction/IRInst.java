@@ -16,8 +16,7 @@ abstract public class IRInst {
 	public int label = 0, add_up = 0;
 	public boolean expanded = false, calling = false, ignored = false;
 	
-	public IRInst(){
-	}
+	public IRInst(){}
 
 	abstract public String op();
 

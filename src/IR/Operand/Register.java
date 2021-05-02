@@ -30,6 +30,8 @@ public class Register{
 		val = other.val;
 	}
 	public boolean equals(Register other){
+		if (other == null)
+			return false;
 		return id == other.id && gr == other.gr;
 	}
 
