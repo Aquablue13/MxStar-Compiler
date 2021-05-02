@@ -1,7 +1,6 @@
 package ASM;
 
-import Optimize.GraphColoringRegAllocator;
-import Optimize.SSAConstruction;
+import Optimize.*;
 import IR.*;
 
 import java.util.ArrayList;
@@ -20,10 +19,8 @@ public class ASM {
 			new SSAConstruction(b).work();
 			b.exp();
 		});
+		ir.blocks.forEach(b -> new ADCE(b).work());
 		ir.blocks.forEach(b -> new GraphColoringRegAllocator(b).main());
-		ir.blocks.forEach(b -> {
-			b.dowloc();
-		//	b.calcRAM();
-		});
+		ir.blocks.forEach(b -> b.dowloc());
 	}
 }

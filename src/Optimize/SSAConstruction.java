@@ -12,8 +12,7 @@ import IR.Operand.Register;
 import java.util.*;
 
 public class SSAConstruction {
-    BasicBlock curBlock;
-
+    public BasicBlock curBlock;
     public int n;
     public int vis_now = 1;
     public int[] vis, jmp_target, label_target;

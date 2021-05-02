@@ -1587,9 +1587,7 @@ main:
 	sw	s10,996(sp)
 	sw	s11,992(sp)
 	sw	ra,988(sp)
-	li	a1,1
-	mv	a0,a1
-	mv	a0,a1
+	li	a0,1
 	call	my_array_alloc
 	mv	a1,a0
 	lui	a0,%hi(.G0)

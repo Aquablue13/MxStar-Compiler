@@ -12,6 +12,10 @@ public class Register{
 		this.pointer = pointer;
 	}
 
+	public boolean dcec() {
+		return (gr == 5 || gr == 0 || gr == 2 || gr == 7);
+	}
+
 	public void assign(Register other){
 		id = other.id;
 		gr = other.gr;
